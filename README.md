@@ -31,3 +31,10 @@
     - user_id
     - job_posting_id
     - applied_at
+
+## TODOS
+- [] auth
+- [] services
+- [] pages
+- [] integrate frontend with backend
+- [] upload to s3
