@@ -33,8 +33,8 @@
     - applied_at
 
 ## TODOS
-- [] auth
+- [x] auth
 - [] services
 - [] pages
 - [] integrate frontend with backend
-- [] upload to s3
+- [] add upload to s3
