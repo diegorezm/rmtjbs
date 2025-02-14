@@ -43,6 +43,10 @@ public class User implements UserDetails {
     this.email = payload.email();
   }
 
+  public UserSafe toUserSafe() {
+    return new UserSafe(this.id, this.email, this.name, this.createdAt, this.updatedAt);
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of(new SimpleGrantedAuthority("ROLE_USER"));
