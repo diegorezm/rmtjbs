@@ -6,6 +6,9 @@ VERSION=0.0.1
 MAIN_CLASS=com.rmtjb.api.RemoteJobsApplication  
 PORT ?= 8080
 
+run-client:
+	@export $(grep -v '^#' .env | xargs) && cd ./src/main/client/ && pnpm run dev
+
 run:
 	@echo "Running Spring Boot application..."
 	@export $(grep -v '^#' .env | xargs) && mvn spring-boot:run
