@@ -1,17 +1,15 @@
 import { X } from "lucide-react";
 import { useState } from "react";
+import type { RegisterFormData } from "..";
 
 type Props = {
-  formData: {
-    preferences: string[],
-    phone: string
-  },
+  formData: RegisterFormData,
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
 }
 
 export function CandidateFormFields({ formData, handleChange }: Props) {
   const [preferencesInput, setPreferencesInput] = useState("");
-  const [preferences, setPreferences] = useState(formData.preferences);
+  const [preferences, setPreferences] = useState(formData.candidateDTO.jobPreferences);
 
   const handlePreferencesInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
@@ -25,12 +23,13 @@ export function CandidateFormFields({ formData, handleChange }: Props) {
         .filter((item) => item !== "");
       setPreferences((prev) => [...prev, ...items]);
       setPreferencesInput("");
-      formData.preferences = preferences
+      formData.candidateDTO.jobPreferences = preferences
     }
   };
 
   const handleRemovePreference = (index: number) => {
     const filtered = preferences.filter((_, i) => i !== index);
+    formData.candidateDTO.jobPreferences = filtered
     setPreferences(filtered);
   };
 
@@ -41,14 +40,19 @@ export function CandidateFormFields({ formData, handleChange }: Props) {
           <span className="label-text">Phone</span>
         </label>
         <input
-          type="text"
+          type="tel"
           id="phone"
           placeholder="Enter your phone number"
-          className="input input-primary w-full"
-          value={formData.phone}
+          className="input input-primary w-full validator tabular-nums"
+          value={formData.candidateDTO.phone}
           onChange={handleChange}
+          data-section="candidateDTO"
           required
+          minLength={10}
+          maxLength={11}
+          pattern="[0-9]*"
         />
+        <p className="validator-hint !text-red-500">Enter a valid phone number</p>
       </div>
       <div className="form-control">
         <label htmlFor="preferences" className="label">
@@ -60,6 +64,7 @@ export function CandidateFormFields({ formData, handleChange }: Props) {
           placeholder="Enter preferences (e.g., Web Developer, Data Analyst)"
           className="input input-primary w-full"
           value={preferencesInput}
+          data-section="candidateDTO"
           onChange={handlePreferencesInput}
         />
         <div className="mt-2">

@@ -1,5 +1,5 @@
 import { Building2, MapPin } from "lucide-react"
-import type { JobPosting } from "~/@types/job-posting"
+import type { JobPosting } from "../types"
 
 type Props = {
   job: JobPosting
@@ -8,9 +8,9 @@ export function JobCard({ job }: Props) {
   return (
     <div key={job.id} className="card bg-base-100 shadow-md p-4 rounded-lg border border-neutral">
       {/* Company Banner */}
-      {job.company.banner_key && (
+      {job.company.bannerKey && (
         <div className="mb-4">
-          <img src={job.company.banner_key} alt={`${job.company.name} Banner`} className="rounded-lg w-full h-24 object-cover" />
+          <img src={job.company.bannerKey} alt={`${job.company.location} Banner`} className="rounded-lg w-full h-24 object-cover" />
         </div>
       )}
 
@@ -21,7 +21,7 @@ export function JobCard({ job }: Props) {
         {/* Company Info */}
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <Building2 className="size-4" />
-          <span>{job.company.name}</span>
+          <span>{job.company.location}</span>
           <MapPin className="size-4" />
           <span>{job.company.location}</span>
         </div>
@@ -31,7 +31,8 @@ export function JobCard({ job }: Props) {
 
         {/* Skills */}
         <div className="flex flex-wrap gap-2 mt-2">
-          {job.skills.map((skill, index) => (
+
+          {job.skills !== undefined && job.skills.map((skill, index) => (
             <span key={index} className="badge badge-outline text-sm">{skill}</span>
           ))}
         </div>

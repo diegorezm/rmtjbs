@@ -1,7 +1,5 @@
 import { Building2, LogOut, Menu, User } from "lucide-react";
-import { useMemo, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
-import { useLoginMutation, useLogoutMutation } from "~/features/auth/api";
 import { useAuthContext } from "~/providers/auth-provider";
 
 function MobileNavbar({ isAuth }: { isAuth: boolean }) {
@@ -65,12 +63,12 @@ export function UserAvatar({ logoutFn }: { logoutFn: () => void }) {
     <div className="dropdown dropdown-end">
       <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
         <div className="w-10 rounded-full">
-          <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" />
+          <img src="/default-avatar.png" alt="User Avatar" />
         </div>
       </label>
       <ul className="menu dropdown-content bg-base-100 rounded-box z-1 shadow-sm">
         <li>
-          <NavLink to="/auth/login/candidate" className="btn btn-ghost">
+          <NavLink to="/profile" className="btn btn-ghost">
             <User className="size-4" /> Profile
           </NavLink>
         </li>

@@ -6,11 +6,12 @@ import com.rmtjb.api.domain.auth.RegisterCompanyDTO;
 import com.rmtjb.api.domain.token.LoginResponseDTO;
 import com.rmtjb.api.domain.token.TokenDTO;
 import com.rmtjb.api.domain.user.User;
+import com.rmtjb.api.domain.user.UserRoles;
 import com.rmtjb.api.services.AuthenticationService;
 import com.rmtjb.api.services.CandidateService;
 import com.rmtjb.api.services.CompanyService;
 import com.rmtjb.api.services.TokenService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.rmtjb.api.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,22 +30,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
   private final AuthenticationService authenticationService;
+  private final UserService userService;
   private final CompanyService companyService;
   private final CandidateService candidateService;
   private final TokenService tokenService;
   private final AuthenticationManager authenticationManager;
 
   @GetMapping("/me")
-  public ResponseEntity<?> me(HttpServletRequest request) {
+  public ResponseEntity<?> me() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    User user = (User) authentication.getPrincipal();
+    User authUser = (User) authentication.getPrincipal();
+    var user = userService.findById(authUser.getId());
     return ResponseEntity.ok(user.toUserSafe());
   }
 
   @PostMapping("/register/company")
   @Transactional
   public ResponseEntity<?> registerCompany(@RequestBody RegisterCompanyDTO data) {
-    User user = authenticationService.register(data.userDTO());
+    User user = authenticationService.register(data.userDTO(), UserRoles.COMPANY);
     companyService.save(data.companyDTO(), user);
     return ResponseEntity.status(201).build();
   }
@@ -52,7 +55,7 @@ public class AuthController {
   @PostMapping("/register/candidate")
   @Transactional
   public ResponseEntity<?> registerCandidate(@RequestBody RegisterCandidateDTO data) {
-    User user = authenticationService.register(data.userDTO());
+    User user = authenticationService.register(data.userDTO(), UserRoles.CANDIDATE);
     candidateService.save(data.candidateDTO(), user);
 
     return ResponseEntity.status(201).build();

@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import type { Route } from "./+types/index";
-import type { JobPosting } from "~/@types/job-posting";
 import { JobCard } from "~/features/jobs/components/job-card";
+import type { JobPosting } from "~/features/jobs/types";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -20,13 +20,11 @@ const mockJobs: JobPosting[] = [
     skills: ["React", "TypeScript", "Tailwind"],
     company: {
       id: "c1",
-      userId: "",
-      name: "TechCorp",
-      location: "San Francisco, CA",
-      banner_key: "",
+      location: ""
     },
     createdAt: "",
-    expiresAt: ""
+    expiresAt: "",
+    updatedAt: "",
   },
   {
     id: "2",
@@ -34,11 +32,10 @@ const mockJobs: JobPosting[] = [
     description: "Join our team to work on scalable APIs using Node.js and Go.",
     skills: ["Node.js", "Go", "PostgreSQL"],
     company: {
-      id: "c2",
-      userId: "",
-      name: "Cloud Solutions",
-      location: "New York, NY",
+      id: "c1",
+      location: ""
     },
+    updatedAt: "",
     createdAt: "",
     expiresAt: ""
   },

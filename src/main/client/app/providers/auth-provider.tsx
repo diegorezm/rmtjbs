@@ -1,44 +1,51 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { GlobalSpinner } from "~/components/global-spinner";
 import { useFetchCurrentUser, useLogoutMutation } from "~/features/auth/api";
-import type { UserSafe } from "~/features/auth/types";
+
+import type { User } from "~/features/auth/types";
 
 type AuthContextType = {
-  user: UserSafe | null;
-  setUser: (user: UserSafe | null) => void;
+  user: User | null;
+  isLoading: boolean;
+  setUser: (user: User | null) => void;
   logout: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserSafe | null>(null);
-  const { data, isLoading, isError } = useFetchCurrentUser();
+  const [user, setUser] = useState<User | null>(null);
+  const [isFetching, setIsFetching] = useState(true);
+  const { data, isLoading: queryLoading, isError } = useFetchCurrentUser();
+
   const logoutFn = useLogoutMutation();
-
-  useEffect(() => {
-    if (!isLoading && !isError) {
-      setUser(data || null);
-    }
-  }, [data, isLoading, isError]);
-
-  if (isLoading) {
-    return (
-      <div className="w-full h-screen flex justify-center">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
 
   const logout = () => {
     setUser(null)
     logoutFn()
   }
 
+  useEffect(() => {
+    if (!queryLoading) {
+      if (!isError) {
+        setUser(data);
+      } else {
+        logout()
+      }
+      setIsFetching(false);
+    }
+  }, [data, queryLoading, isError]);
+
+  if (isFetching) {
+    return <GlobalSpinner />
+  }
+
   return (
     <AuthContext.Provider value={{
       user,
       logout,
-      setUser
+      setUser,
+      isLoading: isFetching
     }}>
       {children}
     </AuthContext.Provider>

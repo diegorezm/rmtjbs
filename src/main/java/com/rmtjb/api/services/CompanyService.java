@@ -17,6 +17,12 @@ import org.springframework.stereotype.Service;
 public class CompanyService {
   private final CompanyRepository companyRepository;
 
+  public Company findByUserId(UUID id) {
+    return this.companyRepository
+        .findByUserId(id)
+        .orElseThrow(() -> new EntityNotFoundException("Company not found."));
+  }
+
   public Company findById(UUID id) {
     return this.companyRepository
         .findById(id)

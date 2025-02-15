@@ -5,6 +5,12 @@ import { useLoginMutation } from "~/features/auth/api";
 import { type LoginDTO } from "~/features/auth/types";
 import { useAuthContext } from "~/providers/auth-provider";
 
+export const meta = () => {
+  return [{
+    title: "Remote jobs | Login",
+  }]
+}
+
 export default function LoginPage() {
   const [formData, setFormData] = useState<LoginDTO>({
     password: "",
@@ -19,7 +25,7 @@ export default function LoginPage() {
     e.preventDefault()
     const data = await loginMutation.mutateAsync(formData)
     setUser(data.user)
-    navigate("/")
+    navigate("/profile")
   }
 
   return (
@@ -44,7 +50,7 @@ export default function LoginPage() {
               className="input input-primary w-full validator"
               required
             />
-            <p className="validator-hint !text-red-500">Enter valid email address</p>
+            <p className="validator-hint !text-red-500">Enter a valid email address</p>
           </div>
 
           {/* Email Input */}
@@ -66,7 +72,7 @@ export default function LoginPage() {
               maxLength={255}
               required
             />
-            <p className="validator-hint !text-red-500">Enter valid password (6 to 255 characters)</p>
+            <p className="validator-hint !text-red-500">Enter a valid password (6 to 255 characters)</p>
           </div>
 
           <button type="submit" className="btn btn-primary w-full mt-4" disabled={loginMutation.isLoading}>

@@ -1,10 +1,9 @@
 package com.rmtjb.api.repositories;
 
 import com.rmtjb.api.domain.job.JobApplicant;
-
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.UUID;
-
-/** JobApplicantRepository */
-public interface JobApplicantRepository extends JpaRepository<JobApplicant, UUID> {}
+public interface JobApplicantRepository extends JpaRepository<JobApplicant, UUID> {
+  Boolean existsByCandidateId(UUID id);
+}

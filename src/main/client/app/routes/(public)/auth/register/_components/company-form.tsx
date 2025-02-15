@@ -1,7 +1,7 @@
+import type { RegisterFormData } from "..";
+
 type CompanyFormFieldsProps = {
-  formData: {
-    location: string
-  };
+  formData: RegisterFormData,
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -16,11 +16,14 @@ export function CompanyFormFields({ formData, handleChange }: CompanyFormFieldsP
           type="text"
           id="location"
           placeholder="Enter your company location"
-          className="input input-primary w-full"
-          value={formData.location}
+          className="input input-primary w-full validator"
+          value={formData.companyDTO.location}
           onChange={handleChange}
+          minLength={1}
           required
+          data-section="companyDTO"
         />
+        <p className="validator-hint !text-red-500">Enter a valid location</p>
       </div>
     </>
   );

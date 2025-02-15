@@ -1,10 +1,13 @@
 package com.rmtjb.api.domain.user;
 
 import com.rmtjb.api.domain.auth.RegisterDTO;
+import com.rmtjb.api.domain.candidate.Candidate;
+import com.rmtjb.api.domain.company.Company;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Entity
+@Entity(name = "user")
 @Table(name = "rmtjbs_users")
 @Getter
 @Setter
@@ -37,6 +40,15 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private LocalDateTime updatedAt = LocalDateTime.now();
 
+  @Enumerated(EnumType.STRING)
+  private UserRoles role;
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
+  private Candidate candidate;
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
+  private Company company;
+
   public User(RegisterDTO payload) {
     this.name = payload.name();
     this.password = payload.password();
@@ -44,12 +56,21 @@ public class User implements UserDetails {
   }
 
   public UserSafe toUserSafe() {
-    return new UserSafe(this.id, this.email, this.name, this.createdAt, this.updatedAt);
+    return new UserSafe(
+        this.id,
+        this.email,
+        this.name,
+        this.role,
+        Optional.ofNullable(this.company),
+        Optional.ofNullable(this.candidate),
+        this.createdAt,
+        this.updatedAt);
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    if (!this.role.equals(UserRoles.ADMIN)) return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
   }
 
   @Override

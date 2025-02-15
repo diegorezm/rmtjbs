@@ -1,24 +1,28 @@
-import type { CandidateDTO } from "../candidate/types";
-import type { CompanyDTO } from "../company/types";
+import type { Candidate, CandidateDTO } from "../candidate/types";
+import type { Company, CompanyDTO } from "../company/types";
 
-export type User = {
+export type AuthUser = {
   email: string,
   password: string,
   name: string,
+  role: "CANDIDATE" | "COMPANY" | "ADMIN",
   createdAt: string,
   updatedAt: string
 }
 
 export type TokenDTO = { token: string, expiresAt: string }
 
-export type UserSafe = Omit<User, "password">
+type UserSafe = Omit<AuthUser, "password">
+
+// I LOVE TYPESCRIPT 
+export type User = UserSafe & { candidate: Candidate, company: null, role: "CANDIDATE" } | UserSafe & { candidate: null, company: Company, role: "COMPANY" }
 
 export type LoginResponseDTO = {
-  user: UserSafe;
+  user: User;
   tokenDTO: TokenDTO
 }
 
-export type RegisterDTO = Omit<User, "createdAt" | "updatedAt">
+export type RegisterDTO = Omit<AuthUser, "createdAt" | "updatedAt" | "role">
 
 export type LoginDTO = Omit<RegisterDTO, "name">
 
@@ -31,3 +35,4 @@ export type RegisterCandidateDTO = {
   userDTO: RegisterDTO;
   candidateDTO: CandidateDTO
 }
+

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { AUTH_TOKEN_KEY } from "~/features/auth/constants";
 
 const isDev = process.env.NODE_ENV === "development"
@@ -43,7 +43,10 @@ api.interceptors.response.use(
       return Promise.reject(new Error(error.response.data.message));
     }
     if (isDev) {
-      console.error(error)
+      console.error("AXIOS ERROR: ", error)
+    }
+    if (error instanceof AxiosError) {
+      return Promise.reject(new Error(error.message))
     }
     return Promise.reject(new Error("An unexpected error occurred"));
   }

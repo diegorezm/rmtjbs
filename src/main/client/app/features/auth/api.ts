@@ -1,12 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { api } from '~/lib/axios';
-import type { LoginDTO, LoginResponseDTO, RegisterCandidateDTO, RegisterCompanyDTO, UserSafe } from './types';
+import type { LoginDTO, LoginResponseDTO, RegisterCandidateDTO, RegisterCompanyDTO, User } from './types';
+
 import { AUTH_TOKEN_KEY } from './constants';
 
 export const useLoginMutation = () =>
   useMutation<LoginResponseDTO, Error, LoginDTO>(async (data: LoginDTO) => {
     const response = await api.post('/auth/login', data);
-    console.log(response)
     return response.data;
   },
     {
@@ -36,8 +36,9 @@ export const useRegisterCandidateMutation = () =>
     return null
   });
 
+
 export const useFetchCurrentUser = () =>
-  useQuery<UserSafe, Error>(['currentUser'], async () => {
+  useQuery<User, Error>(['currentUser'], async () => {
     const response = await api.get('/auth/me');
     return response.data;
   });

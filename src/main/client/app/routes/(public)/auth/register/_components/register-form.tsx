@@ -1,9 +1,10 @@
+import type { RegisterFormData } from "..";
 import { CandidateFormFields } from "./candidate-form";
 import { CompanyFormFields } from "./company-form";
 
 type RegisterFormProps = {
   step: number;
-  formData: any;
+  formData: RegisterFormData;
   registerType: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   handleNext: (e: React.FormEvent) => void;
@@ -23,7 +24,7 @@ export default function RegisterForm({
   isPending
 }: RegisterFormProps) {
   return (
-    <form onSubmit={step === 2 ? handleSubmit : handleNext} className="space-y-4">
+    <form onSubmit={step === 2 ? handleSubmit : handleNext}>
       {step === 1 && (
         <>
           {/* Name */}
@@ -35,13 +36,15 @@ export default function RegisterForm({
               type="text"
               id="name"
               placeholder="Enter your name"
-              className="input input-primary w-full"
-              value={formData.name}
+              className="input input-primary w-full validator"
+              value={formData.userDTO.name}
               onChange={handleChange}
               required
               minLength={4}
               maxLength={255}
+              data-section="userDTO"
             />
+            <p className="validator-hint !text-red-500">Enter a valid name (5 to 255 characters)</p>
           </div>
 
           {/* Email */}
@@ -53,11 +56,13 @@ export default function RegisterForm({
               type="email"
               id="email"
               placeholder="Enter your email"
-              className="input input-primary w-full"
-              value={formData.email}
+              className="input input-primary w-full validator"
+              value={formData.userDTO.email}
               onChange={handleChange}
+              data-section="userDTO"
               required
             />
+            <p className="validator-hint !text-red-500">Enter a valid email</p>
           </div>
 
           {/* Password */}
@@ -69,13 +74,15 @@ export default function RegisterForm({
               type="password"
               id="password"
               placeholder="Enter your password"
-              className="input input-primary w-full"
-              value={formData.password}
+              className="input input-primary w-full validator"
+              value={formData.userDTO.password}
               onChange={handleChange}
               required
               minLength={6}
               maxLength={255}
+              data-section="userDTO"
             />
+            <p className="validator-hint !text-red-500">Enter a valid password (5 to 255 characters)</p>
           </div>
 
           <button type="submit" className="btn btn-primary w-full mt-4">

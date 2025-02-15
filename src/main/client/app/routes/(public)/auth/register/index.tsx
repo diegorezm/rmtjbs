@@ -4,12 +4,28 @@ import { useState } from "react";
 import RegisterForm from "./_components/register-form";
 import { AlertError } from "~/components/alert";
 
+import { type RegisterDTO } from "~/features/auth/types"
+
 import { useRegisterCandidateMutation, useRegisterCompanyMutation } from "~/features/auth/api";
+import type { CompanyDTO } from "~/features/company/types";
+import type { CandidateDTO } from "~/features/candidate/types";
 
 const VALID_REGISTER_TYPES = {
   candidate: true,
   company: true,
 } as const;
+
+export const meta = () => {
+  return [{
+    title: "Remote jobs | Register"
+  }]
+}
+
+export type RegisterFormData = {
+  userDTO: RegisterDTO,
+  companyDTO: CompanyDTO,
+  candidateDTO: CandidateDTO
+}
 
 export default function RegisterPage() {
   const [searchParams] = useSearchParams();
@@ -25,18 +41,39 @@ export default function RegisterPage() {
 
   const [step, setStep] = useState(1);
   // this sucks, i have to find a way to change it
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    location: "",
-    phone: "",
-    preferences: []
+  const [formData, setFormData] = useState<RegisterFormData>({
+    userDTO: {
+      email: "",
+      name: "",
+      password: ""
+    },
+    candidateDTO: {
+      phone: "",
+      preferences: []
+    },
+    companyDTO: {
+      location: ""
+    }
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    const { id, value, dataset } = e.target;
+    const section = dataset.section as keyof RegisterFormData | undefined;
+
+    if (section) {
+      setFormData((prev) => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [id]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
+    }
   };
 
   const handleNext = (e: React.FormEvent) => {
@@ -51,26 +88,16 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const userDTO = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password
-    }
 
     if (registerType === "candidate") {
+      const { userDTO, candidateDTO } = formData
       await registerCandidateMutation.mutateAsync({
-        userDTO,
-        candidateDTO: {
-          phone: formData.phone,
-          preferences: formData.preferences
-        }
+        userDTO, candidateDTO
       })
     } else if (registerType === "company") {
+      const { userDTO, companyDTO } = formData
       await registerCompanyMutation.mutateAsync({
-        userDTO,
-        companyDTO: {
-          location: formData.location
-        }
+        userDTO, companyDTO
       })
     }
 

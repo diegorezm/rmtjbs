@@ -1,5 +1,6 @@
 package com.rmtjb.api.domain.candidate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rmtjb.api.domain.user.User;
 import jakarta.persistence.*;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Candidate {
 
   @OneToOne
   @JoinColumn(name = "user_id", nullable = false, unique = true)
+  @JsonIgnore
   private User user;
 
   private String profilePictureKey;

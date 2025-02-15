@@ -4,6 +4,6 @@ CREATE TABLE rmtjbs_candidates (
     profile_picture_key TEXT,
     resume_key TEXT,
     phone VARCHAR(20),
-    job_preferences TEXT ARRAY [10]
+    job_preferences TEXT ARRAY[]
 );
 

@@ -1,7 +1,9 @@
-export type CandidateDTO = {
+export type Candidate = {
+  id: string,
   phone: string,
-  preferences: string[],
+  jobPreferences: string[],
   resumeKey?: string,
   profilePictureKey?: string
 }
 
+export type CandidateDTO = Omit<Candidate, "id">
