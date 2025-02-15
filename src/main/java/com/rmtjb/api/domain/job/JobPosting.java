@@ -22,7 +22,10 @@ public class JobPosting {
   @Id @GeneratedValue private UUID id;
 
   private String title;
+
+  @Column(nullable = false, length = 1000) // Set max length to 1000
   private String description;
+
   private BigDecimal salary;
   private LocalDateTime expiresAt;
 

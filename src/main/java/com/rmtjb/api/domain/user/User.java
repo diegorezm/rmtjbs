@@ -1,5 +1,7 @@
 package com.rmtjb.api.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rmtjb.api.domain.auth.RegisterDTO;
 import com.rmtjb.api.domain.candidate.Candidate;
 import com.rmtjb.api.domain.company.Company;
@@ -44,9 +46,11 @@ public class User implements UserDetails {
   private UserRoles role;
 
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
+  @JsonManagedReference
   private Candidate candidate;
 
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
+  @JsonBackReference
   private Company company;
 
   public User(RegisterDTO payload) {

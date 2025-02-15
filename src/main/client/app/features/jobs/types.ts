@@ -1,3 +1,4 @@
+import type { UserSafe } from "../auth/types";
 import type { Company } from "../company/types";
 
 export type JobPosting = {
@@ -9,13 +10,8 @@ export type JobPosting = {
   expiresAt: string;
   createdAt: string;
   updatedAt: string;
-  company: {
-    id: string,
-    name: string,
-    email: string,
-    location: string,
-    logoKey?: string,
-    bannerKey: string
+  company: Company & {
+    user: UserSafe
   }
 }
 

@@ -1,5 +1,7 @@
 package com.rmtjb.api.domain.company;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rmtjb.api.domain.user.User;
 import jakarta.persistence.*;
 import java.util.UUID;
@@ -19,6 +21,8 @@ public class Company {
 
   @OneToOne
   @JoinColumn(name = "user_id", nullable = false, unique = true)
+  @JsonManagedReference
+  @JsonIgnoreProperties({"password"})
   private User user;
 
   private String location;

@@ -12,7 +12,7 @@ export type AuthUser = {
 
 export type TokenDTO = { token: string, expiresAt: string }
 
-type UserSafe = Omit<AuthUser, "password">
+export type UserSafe = Omit<AuthUser, "password">
 
 // I LOVE TYPESCRIPT 
 export type User = UserSafe & { candidate: Candidate, company: null, role: "CANDIDATE" } | UserSafe & { candidate: null, company: Company, role: "COMPANY" }

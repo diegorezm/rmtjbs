@@ -7,7 +7,7 @@ public record CompanyDTO(String location, Optional<String> bannerKey, Optional<S
   public static CompanyDTO genMock() {
     Faker faker = new Faker();
 
-    String location = faker.address().fullAddress();
+    String location = faker.address().country() + "," + faker.address().city();
 
     Optional<String> bannerKey = Optional.of(faker.internet().image());
 

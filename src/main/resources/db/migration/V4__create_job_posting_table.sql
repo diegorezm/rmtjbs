@@ -1,7 +1,7 @@
 CREATE TABLE rmtjbs_job_postings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
-    description TEXT NOT NULL,
+    description VARCHAR(1024) NOT NULL,
     salary NUMERIC(10,2),
     skills TEXT[],
     company_id UUID NOT NULL REFERENCES rmtjbs_companies(id) ON DELETE CASCADE,
