@@ -9,9 +9,9 @@ public record CompanyDTO(String location, Optional<String> bannerKey, Optional<S
 
     String location = faker.address().country() + "," + faker.address().city();
 
-    Optional<String> bannerKey = Optional.of(faker.internet().image());
+    Optional<String> bannerKey = Optional.empty();
 
-    Optional<String> logoKey = Optional.of(faker.internet().avatar());
+    Optional<String> logoKey = Optional.empty();
 
     return new CompanyDTO(location, bannerKey, logoKey);
   }

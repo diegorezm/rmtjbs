@@ -2,11 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '~/lib/axios';
 import type { Page } from '../types';
 import type { JobPosting, JobPostingDTO, UpdateJobPostingDTO } from './types';
+import qs from "qs"
 
 export const useJobPostsQuery = (params: {
   page?: number;
   q?: string;
-  preferences?: string[];
 }) => {
   return useQuery<Page<JobPosting>, Error>(
     ['jobPosts', params],
@@ -15,8 +15,33 @@ export const useJobPostsQuery = (params: {
         params: {
           page: params.page || 1,
           q: params.q,
-          preferences: params.preferences,
         },
+      });
+      return response.data;
+    },
+    {
+      keepPreviousData: true,
+    }
+  );
+};
+
+export const useRecommendedJobPostsQuery = (params: {
+  page?: number;
+  q?: string;
+  preferences: string[];
+}) => {
+  return useQuery<Page<JobPosting>, Error>(
+    ['jobRecommendedPosts', params],
+    async () => {
+      const response = await api.get('/job-posts/recommended', {
+        params: {
+          page: params.page || 1,
+          q: params.q,
+          preferences: params.preferences
+        },
+        paramsSerializer: (params) => {
+          return qs.stringify(params, { arrayFormat: 'repeat' })
+        }
       });
       return response.data;
     },

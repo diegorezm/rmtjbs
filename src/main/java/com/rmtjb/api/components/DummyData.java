@@ -57,7 +57,7 @@ public class DummyData implements CommandLineRunner {
     var user = authenticationService.register(registerDTO, UserRoles.CANDIDATE);
     var dto =
         new CandidateDTO(
-            "12121212121", List.of("Web dev", "php"), Optional.empty(), Optional.empty());
+            "12121212121", List.of("Web Development", "php"), Optional.empty(), Optional.empty());
     candidateService.save(dto, user);
 
     RegisterDTO registerDTO2 = new RegisterDTO("diego", "diego_company@email.com", "diegodiego");

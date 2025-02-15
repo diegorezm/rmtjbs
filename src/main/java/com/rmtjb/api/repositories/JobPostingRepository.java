@@ -10,8 +10,12 @@ import org.springframework.data.repository.query.Param;
 
 /** JobPostingRepository */
 public interface JobPostingRepository extends JpaRepository<JobPosting, UUID> {
+
   @Query(
-      value = "SELECT * FROM rmtjbs_job_postings j WHERE :skills = ANY (j.skills)",
+      value =
+          "SELECT * FROM rmtjbs_job_postings j WHERE EXISTS (    SELECT 1     FROM unnest(j.skills)"
+              + " AS skill     WHERE skill ILIKE ANY (ARRAY(SELECT '%' ||"
+              + " trim(unnest(string_to_array(:skills, ','))) || '%')))",
       nativeQuery = true)
   Page<JobPosting> findBySkills(@Param("skills") String skills, Pageable pageable);
 
@@ -20,14 +24,16 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, UUID> {
           "SELECT * FROM rmtjbs_job_postings j  WHERE j.title LIKE %:keyword% OR j.description LIKE"
               + " %:keyword%",
       nativeQuery = true)
-  Page<JobPosting> findByKeyword(String query, Pageable pageable);
+  Page<JobPosting> findByKeyword(String keyword, Pageable pageable);
 
   @Query(
       value =
-          "SELECT * FROM rmtjbs_job_postings j  WHERE :skills = ANY (j.skills) OR j.title LIKE"
-              + " %:keyword% OR j.description LIKE %:keyword%",
+          "SELECT * FROM rmtjbs_job_postings j WHERE (EXISTS (SELECT 1 FROM unnest(j.skills) AS"
+              + " skill WHERE skill ILIKE ANY (ARRAY(:skills))) OR (j.title ILIKE %:query% OR"
+              + " j.description ILIKE %:query%)",
       nativeQuery = true)
-  Page<JobPosting> findByKeywordAndSkill(String query, String skills, Pageable pageable);
+  Page<JobPosting> findByKeywordAndSkill(
+      @Param("query") String query, @Param("skills") String[] skills, Pageable pageable);
 
   Page<JobPosting> findByCompanyId(UUID id, Pageable pageable);
 }

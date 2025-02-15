@@ -36,7 +36,7 @@ public class JobPosting {
   @JoinColumn(name = "company_id", nullable = false)
   private Company company;
 
-  @ElementCollection private List<String> skills;
+  private List<String> skills;
 
   public JobPosting(JobPostDTO dto) {
     this.title = dto.title();

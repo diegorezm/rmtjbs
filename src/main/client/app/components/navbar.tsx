@@ -16,7 +16,7 @@ function MobileNavbar({ isAuth }: { isAuth: boolean }) {
           <NavLink to="/" className="text-lg">Home</NavLink>
         </li>
         <li>
-          <NavLink to="/jobs" className="text-lg">Jobs</NavLink>
+          <NavLink to="/jobs/recommended" className="text-lg">Jobs</NavLink>
         </li>
         {!isAuth && (
           <>
@@ -43,7 +43,7 @@ function DesktopNavbar() {
           <NavLink to="/" className="text-lg">Home</NavLink>
         </li>
         <li>
-          <NavLink to="/jobs" className="text-lg">Jobs</NavLink>
+          <NavLink to="/jobs/recommended" className="text-lg">Jobs</NavLink>
         </li>
       </ul>
     </div>

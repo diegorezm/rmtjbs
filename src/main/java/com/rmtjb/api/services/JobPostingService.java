@@ -34,15 +34,18 @@ public class JobPostingService {
     return jobPostingRepository.findByKeyword(query, pageable);
   }
 
+  public Page<JobPosting> findByKeyword(Pageable pageable, String query) {
+    return jobPostingRepository.findByKeyword(query, pageable);
+  }
+
   public Page<JobPosting> findByKeywordAndPreferences(
       Pageable pageable, String[] skills, String query) {
-    String pref = String.join(",", skills);
-    return jobPostingRepository.findByKeywordAndSkill(query, pref, pageable);
+    return jobPostingRepository.findByKeywordAndSkill(query, skills, pageable);
   }
 
   public Page<JobPosting> findByPreferences(Pageable pageable, String[] skills) {
-    String pref = String.join(",", skills);
-    return jobPostingRepository.findBySkills(pref, pageable);
+    String skillsString = String.join(",", skills);
+    return jobPostingRepository.findBySkills(skillsString, pageable);
   }
 
   public JobPosting findById(UUID id) {

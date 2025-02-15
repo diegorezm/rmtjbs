@@ -29,24 +29,25 @@ public class JobPostsController {
   @GetMapping
   public Page<JobPosting> findAll(
       @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-      @RequestParam(name = "q", required = false) String query,
-      @RequestParam(required = false) String[] preferences) {
+      @RequestParam(name = "q", required = false) String query) {
 
     Pageable paging = PageRequest.of(page - 1, 10, Sort.by("id").ascending());
-
-    boolean hasPreferences = preferences != null && preferences.length > 0;
     boolean hasQuery = query != null && !query.isBlank();
 
-    if (hasPreferences && hasQuery) {
-      return this.jobPostingService.findByKeywordAndPreferences(paging, preferences, query);
-    }
-    if (hasPreferences) {
-      return this.jobPostingService.findByPreferences(paging, preferences);
-    }
     if (hasQuery) {
-      return this.jobPostingService.findAll(paging, query);
+      return this.jobPostingService.findByKeyword(paging, query);
     }
     return this.jobPostingService.findAll(paging);
+  }
+
+  @GetMapping("/recommended")
+  public Page<JobPosting> findAllRecomended(
+      @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+      @RequestParam(name = "q", required = false) String query,
+      @RequestParam(value = "preferences") String[] preferences) {
+    Pageable paging = PageRequest.of(page - 1, 10, Sort.by("id").ascending());
+    System.out.println(preferences.toString());
+    return this.jobPostingService.findByPreferences(paging, preferences);
   }
 
   @GetMapping("/{id}")

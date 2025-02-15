@@ -10,7 +10,7 @@ export function JobCard({ job }: Props) {
       {/* Company Banner */}
       {job.company.bannerKey && (
         <div className="mb-4">
-          <img src={job.company.bannerKey} alt={`${job.company.location} Banner`} className="rounded-lg w-full h-24 object-cover" />
+          <img src={job.company.bannerKey} alt={`${job.company.user.name} Banner`} className="rounded-lg w-full h-24 object-cover" />
         </div>
       )}
 
@@ -21,13 +21,15 @@ export function JobCard({ job }: Props) {
         {/* Company Info */}
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <Building2 className="size-4" />
-          <span>{job.company.location}</span>
+          <span>{job.company.user.name}</span>
           <MapPin className="size-4" />
           <span>{job.company.location}</span>
         </div>
 
         {/* Description */}
-        <p className="text-sm text-gray-600">{job.description}</p>
+        <p className="text-sm text-gray-600" dangerouslySetInnerHTML={{
+          __html: job.description
+        }}></p>
 
         {/* Skills */}
         <div className="flex flex-wrap gap-2 mt-2">
