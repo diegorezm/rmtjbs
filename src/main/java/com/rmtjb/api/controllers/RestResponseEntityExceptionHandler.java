@@ -42,12 +42,14 @@ public class RestResponseEntityExceptionHandler extends ResponseBodyEmitterRetur
   @ExceptionHandler(value = {RuntimeException.class})
   protected ResponseEntity<ExceptionResponseDTO> handleGenericRuntimeException(
       RuntimeException ex) {
+    System.err.println(ex);
     return ResponseEntity.status(500)
         .body(new ExceptionResponseDTO("An unexpected error occurred"));
   }
 
   @ExceptionHandler(value = {Exception.class})
   protected ResponseEntity<ExceptionResponseDTO> handleGeneral(Exception ex) {
+    System.err.println(ex);
     return ResponseEntity.status(500)
         .body(new ExceptionResponseDTO("An unexpected error occurred"));
   }
