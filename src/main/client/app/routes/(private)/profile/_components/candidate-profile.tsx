@@ -83,14 +83,15 @@ export function CandidateProfile({ user }: Props) {
                     href={resumeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 underline"
+                    className="link link-primary"
                   >
                     View Resume
                   </a>
-                  <label className="cursor-pointer text-blue-500 hover:underline">
+
+                  <label className="link link-hover">
                     <input
                       type="file"
-                      className="hidden"
+                      className="hidden "
                       accept=".pdf"
                       onChange={handleResumeUpload}
                       disabled={isUploading || isCandidateMutationLoading}
@@ -99,7 +100,7 @@ export function CandidateProfile({ user }: Props) {
                   </label>
                 </div>
               ) : (
-                <label className="cursor-pointer text-blue-500 hover:underline">
+                <label className="link link-primary">
                   <input
                     type="file"
                     className="hidden"
@@ -115,7 +116,7 @@ export function CandidateProfile({ user }: Props) {
           </div>
 
         </div>
-      </div>
+      </div >
     </>
   )
 }

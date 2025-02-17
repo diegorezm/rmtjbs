@@ -4,6 +4,7 @@ import { CandidateProfile } from "./_components/candidate-profile";
 import { Edit } from "lucide-react";
 import { CompanyProfile } from "./_components/company-profile";
 import { InteractiveAvatar } from "./_components/avatar";
+import { EditUserDialog } from "./_components/edit-user-dialog";
 
 export default function ProfilePage() {
   const { user } = useAuthContext();
@@ -22,7 +23,10 @@ export default function ProfilePage() {
       <div className="max-w-3xl w-full px-6">
         <div className="relative card shadow-xl bg-base-100">
           <div className="flex flex-wrap gap-2 justify-center absolute right-5 top-5">
-            <button className="btn btn-primary btn-md">
+            <button className="btn btn-primary btn-md" onClick={() => {
+              const modal = document.getElementById('edit-profile-modal') as HTMLDialogElement
+              modal.showModal()
+            }}>
               <Edit className="size-5" />
             </button>
           </div>
@@ -55,6 +59,7 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+      <EditUserDialog />
     </div>
   );
 }

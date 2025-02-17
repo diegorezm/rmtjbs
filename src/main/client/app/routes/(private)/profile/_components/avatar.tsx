@@ -64,7 +64,7 @@ export function InteractiveAvatar({ avatarKey, user }: Props) {
         logoKey: objectKey
       })
     }
-    window.location.reload()
+    setIsLoading(false)
   };
 
   return (
@@ -76,6 +76,10 @@ export function InteractiveAvatar({ avatarKey, user }: Props) {
             src={avatarUrl}
             alt={`${user.name}'s avatar`}
             className="object-cover w-full h-full transition-all duration-300 group-hover:blur-sm"
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null
+              currentTarget.src = "/default-avatar.png"
+            }}
           />
         </div>
 
@@ -88,8 +92,9 @@ export function InteractiveAvatar({ avatarKey, user }: Props) {
         </div>
 
         <input type="file" accept="image/*" ref={fileInputRef} onChange={onImageChange} disabled={isLoading || isCandidateMutationLoading || isCompanyMutationLoading} hidden />
-      </div>
-      {isCandidateMutateError && <AlertError message={candidateMutationError.message} />}
+      </div >
+      {isCandidateMutateError && <AlertError message={candidateMutationError.message} />
+      }
       {isCompanyMutationError && <AlertError message={companyMutationError.message} />}
     </>
   );
