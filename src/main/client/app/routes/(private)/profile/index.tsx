@@ -3,12 +3,18 @@ import { useAuthContext } from "~/providers/auth-provider";
 import { CandidateProfile } from "./_components/candidate-profile";
 import { Edit } from "lucide-react";
 import { CompanyProfile } from "./_components/company-profile";
+import { InteractiveAvatar } from "./_components/avatar";
 
 export default function ProfilePage() {
   const { user } = useAuthContext();
 
   if (user === null) {
     return <Navigate to="/auth/login" replace />;
+  }
+  const getAvatarKey = () => {
+    if (user.role === "COMPANY") return user.company.logoKey
+    if (user.role === "CANDIDATE") return user.candidate.profilePictureKey
+    return undefined
   }
 
   return (
@@ -21,14 +27,8 @@ export default function ProfilePage() {
             </button>
           </div>
           <div className="card-body flex flex-col items-center">
-            <div className="avatar">
-              <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                <img
-                  src={"/default-avatar.png"}
-                  alt={`${user.name}'s avatar`}
-                />
-              </div>
-            </div>
+
+            <InteractiveAvatar user={user} avatarKey={getAvatarKey()} />
 
             <h2 className="text-2xl font-bold mt-4">{user.name}</h2>
             <p className="text-gray-500 text-sm">{user.email}</p>

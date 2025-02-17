@@ -25,13 +25,13 @@ export const useLogoutMutation = () => {
 }
 
 export const useRegisterCompanyMutation = () =>
-  useMutation<null, Error, RegisterCompanyDTO>(async (data: RegisterCompanyDTO) => {
+  useMutation<null, Error, RegisterCompanyDTO>(async (data) => {
     await api.post('/auth/register/company', data);
     return null
   });
 
 export const useRegisterCandidateMutation = () =>
-  useMutation<null, Error, RegisterCandidateDTO>(async (data: RegisterCandidateDTO) => {
+  useMutation<null, Error, RegisterCandidateDTO>(async (data) => {
     await api.post('/auth/register/candidate', data);
     return null
   });

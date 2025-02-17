@@ -5,6 +5,7 @@ import com.rmtjb.api.domain.company.CompanyDTO;
 import com.rmtjb.api.domain.exception.EntityNotFoundException;
 import com.rmtjb.api.domain.exception.UnauthorizedException;
 import com.rmtjb.api.domain.user.User;
+import com.rmtjb.api.domain.user.UserRoles;
 import com.rmtjb.api.repositories.CompanyRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -35,21 +36,23 @@ public class CompanyService {
     return this.companyRepository.save(company);
   }
 
-  public void update(UUID companyId, CompanyDTO dto) {
-    Company company = this.findById(companyId);
-
+  public void update(CompanyDTO dto) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     User user = (User) authentication.getPrincipal();
+    if (user.getRole().equals(UserRoles.COMPANY) && user.getCompany() != null) {
+      var company = user.getCompany();
 
-    if (!user.getId().equals(company.getUser().getId()))
-      throw new UnauthorizedException("You don't own this company account.");
+      company.setLocation(dto.location());
+      if (dto.bannerKey().isPresent()) {
+        company.setBannerKey(dto.bannerKey().get());
+      }
+      if (dto.logoKey().isPresent()) {
+        company.setLogoKey(dto.logoKey().get());
+      }
 
-    company.setLocation(dto.location());
-    if (dto.bannerKey().isPresent()) {
-      company.setBannerKey(dto.bannerKey().get());
-    }
-    if (dto.logoKey().isPresent()) {
-      company.setLogoKey(dto.logoKey().get());
+      this.companyRepository.save(company);
+    } else {
+      throw new UnauthorizedException("This user is not a company.");
     }
   }
 }

@@ -19,8 +19,4 @@ public class CloudflareR2Config {
 
   @Value("${CLOUDFLARE_ENDPOINT}")
   private String endpoint;
-
-  public String getEndpoint() {
-    return String.format("https://%s.r2.cloudflarestorage.com", accountId);
-  }
 }

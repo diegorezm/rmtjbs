@@ -45,8 +45,11 @@ public class JobPostsController {
       @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
       @RequestParam(name = "q", required = false) String query,
       @RequestParam(value = "preferences") String[] preferences) {
+    boolean hasQuery = query != null && !query.isBlank();
     Pageable paging = PageRequest.of(page - 1, 10, Sort.by("id").ascending());
-    System.out.println(preferences.toString());
+    if (hasQuery) {
+      return this.jobPostingService.findByKeywordAndPreferences(paging, preferences, query);
+    }
     return this.jobPostingService.findByPreferences(paging, preferences);
   }
 

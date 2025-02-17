@@ -1,4 +1,4 @@
-import type { Route } from "./+types/general";
+import type { Route } from "./+types/index";
 import { useJobPostsQuery } from "~/features/jobs/api";
 import { AlertError } from "~/components/alert";
 import { JobCard } from "~/features/jobs/components/job-card";

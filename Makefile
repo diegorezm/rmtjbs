@@ -13,6 +13,10 @@ run:
 	@echo "Running Spring Boot application..."
 	@export $(grep -v '^#' .env | xargs) && mvn spring-boot:run
 
+clean-install:
+	@echo "Running Spring Boot application..."
+	@export $(grep -v '^#' .env | xargs) && mvn clean install
+
 build:
 	@echo "Building Spring Boot application..."
 	@mvn clean package -DskipTests

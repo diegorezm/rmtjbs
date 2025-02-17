@@ -81,4 +81,9 @@ public class User implements UserDetails {
   public String getUsername() {
     return this.email;
   }
+
+  @Override
+  public String toString() {
+    return "\nname: " + this.name + "\nemail: " + this.email + "\nrole: " + this.role.toString();
+  }
 }

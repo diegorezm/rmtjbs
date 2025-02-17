@@ -1,4 +1,4 @@
-import type { Route } from "./+types/recommended";
+import type { Route } from "./+types/index";
 import { useRecommendedJobPostsQuery } from "~/features/jobs/api";
 import { AlertError } from "~/components/alert";
 import { JobCard } from "~/features/jobs/components/job-card";

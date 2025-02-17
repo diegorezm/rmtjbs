@@ -6,8 +6,8 @@ export default [
     route("/profile", "./routes/(private)/profile/index.tsx"),
     layout("./components/layouts/job-layout.tsx", [
       ...prefix("jobs", [
-        route("/general", "./routes/(public)/jobs/general.tsx"),
-        route("/recommended", "./routes/(public)/jobs/recommended.tsx")
+        route("/general", "./routes/(public)/jobs/general/index.tsx"),
+        route("/recommended", "./routes/(public)/jobs/recommended/index.tsx")
       ]),
     ]),
     ...prefix("auth", [

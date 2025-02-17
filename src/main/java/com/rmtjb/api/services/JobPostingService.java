@@ -8,6 +8,7 @@ import com.rmtjb.api.domain.job.JobPosting;
 import com.rmtjb.api.domain.user.User;
 import com.rmtjb.api.repositories.CompanyRepository;
 import com.rmtjb.api.repositories.JobPostingRepository;
+import java.util.Arrays;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,7 +41,9 @@ public class JobPostingService {
 
   public Page<JobPosting> findByKeywordAndPreferences(
       Pageable pageable, String[] skills, String query) {
-    return jobPostingRepository.findByKeywordAndSkill(query, skills, pageable);
+    String[] pref =
+        Arrays.stream(skills).map(skill -> "%" + skill.trim() + "%").toArray(String[]::new);
+    return jobPostingRepository.findByKeywordAndSkill(query, pref, pageable);
   }
 
   public Page<JobPosting> findByPreferences(Pageable pageable, String[] skills) {

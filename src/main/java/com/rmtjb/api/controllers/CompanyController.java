@@ -24,9 +24,9 @@ public class CompanyController {
     return ResponseEntity.ok(company);
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<?> update(@PathVariable UUID id, @RequestBody CompanyDTO dto) {
-    companyService.update(id, dto);
+  @PutMapping()
+  public ResponseEntity<?> update(@RequestBody CompanyDTO dto) {
+    companyService.update(dto);
     return ResponseEntity.ok().build();
   }
 }
