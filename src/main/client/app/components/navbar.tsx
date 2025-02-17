@@ -1,38 +1,8 @@
-import { Building2, LogOut, Menu, User } from "lucide-react";
+import { Building2, LogOut, UserIcon } from "lucide-react";
+import { useMemo } from "react";
 import { NavLink, useNavigate } from "react-router";
+import type { User } from "~/features/auth/types";
 import { useAuthContext } from "~/providers/auth-provider";
-
-function MobileNavbar({ isAuth }: { isAuth: boolean }) {
-  return (
-    <div className="dropdown dropdown-end">
-      <label tabIndex={0} className="btn btn-ghost lg:hidden">
-        <Menu className="w-6 h-6" />
-      </label>
-      <ul
-        tabIndex={0}
-        className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-      >
-        <li>
-          <NavLink to="/" className="text-lg">Home</NavLink>
-        </li>
-        <li>
-          <NavLink to="/jobs/recommended" className="text-lg">Jobs</NavLink>
-        </li>
-        {!isAuth && (
-          <>
-            <li>
-              <NavLink to="/auth/login" className="text-lg">Login</NavLink>
-            </li>
-            <li>
-              <NavLink to="/auth/register" className="text-lg">Register</NavLink>
-            </li>
-          </>
-        )}
-      </ul>
-    </div>
-  );
-}
-
 
 
 function DesktopNavbar() {
@@ -51,7 +21,25 @@ function DesktopNavbar() {
 }
 
 
-export function UserAvatar({ logoutFn }: { logoutFn: () => void }) {
+export function UserAvatar({ logoutFn, user }: { user: User, logoutFn: () => void }) {
+
+  const cloudflarePublicEndpoint = import.meta.env.VITE_CLOUDFLARE_PUBLIC_ENDPOINT ?? "";
+
+  const getAvatarKey = () => {
+    if (user.role === "COMPANY") return user.company.logoKey
+    if (user.role === "CANDIDATE") return user.candidate.profilePictureKey
+    return undefined
+  }
+
+  const avatarKey = getAvatarKey()
+
+  const avatarUrl = useMemo(() => {
+    if (avatarKey) {
+      return `${cloudflarePublicEndpoint}/${avatarKey}`;
+    }
+    return "/default-avatar.png";
+  }, [user, avatarKey, cloudflarePublicEndpoint]);
+
   const navigate = useNavigate()
 
   const onLogout = () => {
@@ -63,13 +51,13 @@ export function UserAvatar({ logoutFn }: { logoutFn: () => void }) {
     <div className="dropdown dropdown-end">
       <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
         <div className="w-10 rounded-full">
-          <img src="/default-avatar.png" alt="User Avatar" />
+          <img src={avatarUrl} alt="User Avatar" />
         </div>
       </label>
       <ul className="menu dropdown-content bg-base-100 rounded-box z-1 shadow-sm">
         <li>
           <NavLink to="/profile" className="btn btn-ghost">
-            <User className="size-4" /> Profile
+            <UserIcon className="size-4" /> Profile
           </NavLink>
         </li>
         <li>
@@ -94,13 +82,11 @@ export function Navbar() {
         </NavLink>
       </div>
 
-      {/* Desktop Navigation */}
       <DesktopNavbar />
 
-      {/* End Section */}
       <div className="navbar-end flex items-center gap-4">
         {user ? (
-          <UserAvatar logoutFn={logout} />
+          <UserAvatar logoutFn={logout} user={user} />
         ) : (
           <div className="gap-2 hidden lg:flex">
             <details className="dropdown">
@@ -114,7 +100,7 @@ export function Navbar() {
                     }}
                     className="btn btn-ghost"
                   >
-                    <User className="size-4" /> As a candidate
+                    <UserIcon className="size-4" /> As a candidate
                   </NavLink>
                 </li>
                 <li>
@@ -135,8 +121,6 @@ export function Navbar() {
             </NavLink>
           </div>
         )}
-        {/* Mobile Navbar for smaller screens */}
-        <MobileNavbar isAuth={!!user} />
       </div>
     </nav>
   );

@@ -19,7 +19,9 @@ export default function JobsPage() {
   const q = getSearchParams.get("q") ?? ""
   const page = Number.parseInt(getSearchParams.get("page") || "0") ?? 0
 
+
   const getPreferences = () => {
+    console.log(user?.candidate?.jobPreferences)
     if (user?.role === "CANDIDATE") return user.candidate.jobPreferences
     return []
   }

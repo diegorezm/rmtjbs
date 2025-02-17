@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public record CandidateDTO(
     String phone,
-    List<String> preferences,
+    List<String> jobPreferences,
     Optional<String> resumeKey,
     Optional<String> profilePictureKey) {
   public static CandidateDTO genMock() {

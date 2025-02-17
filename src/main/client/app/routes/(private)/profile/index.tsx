@@ -49,7 +49,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {user.role === "CANDIDATE" && <CandidateProfile data={user.candidate} />}
+            {user.role === "CANDIDATE" && <CandidateProfile user={user} />}
             {user.role === "COMPANY" && <CompanyProfile data={user.company} />}
 
           </div>

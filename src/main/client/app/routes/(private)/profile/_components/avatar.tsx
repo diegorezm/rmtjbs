@@ -1,5 +1,6 @@
 import { Image } from "lucide-react";
 import { useMemo, useRef, useState, type ChangeEvent } from "react";
+import { AlertError } from "~/components/alert";
 import type { User } from "~/features/auth/types";
 import { useUpdateCandidateMutation } from "~/features/candidate/api";
 import { useUpdateCompanyMutation } from "~/features/company/api";
@@ -50,7 +51,9 @@ export function InteractiveAvatar({ avatarKey, user }: Props) {
     if (user.role === "CANDIDATE") {
       const { candidate } = user;
       await updateCandidate({
-        ...candidate,
+        jobPreferences: candidate.jobPreferences,
+        phone: candidate.phone,
+        resumeKey: candidate.resumeKey,
         profilePictureKey: objectKey
       });
     }
@@ -65,26 +68,30 @@ export function InteractiveAvatar({ avatarKey, user }: Props) {
   };
 
   return (
-    <div className="avatar group relative cursor-pointer">
-      {/* The avatar image */}
-      <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
-        <img
-          src={avatarUrl}
-          alt={`${user.name}'s avatar`}
-          className="object-cover w-full h-full transition-all duration-300 group-hover:blur-sm"
-        />
-      </div>
+    <>
+      <div className="avatar group relative cursor-pointer">
+        {/* The avatar image */}
+        <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
+          <img
+            src={avatarUrl}
+            alt={`${user.name}'s avatar`}
+            className="object-cover w-full h-full transition-all duration-300 group-hover:blur-sm"
+          />
+        </div>
 
-      {/* Overlay and loading spinner */}
-      <div className={`absolute inset-0 flex items-center justify-center rounded-full bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLoading ? "opacity-100" : ""}`} role="button" onClick={onFileInputClick}>
-        {isLoading && (
-          <span className="loading loading-spinner loading-lg my-8 mx-8"></span>
-        )}
-        <Image className="m-auto my-8" />
-      </div>
+        {/* Overlay and loading spinner */}
+        <div className={`absolute inset-0 flex items-center justify-center rounded-full bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLoading ? "opacity-100" : ""}`} role="button" onClick={onFileInputClick}>
+          {isLoading && (
+            <span className="loading loading-spinner loading-lg my-8 mx-8"></span>
+          )}
+          <Image className="m-auto my-8" />
+        </div>
 
-      <input type="file" accept="image/*" ref={fileInputRef} onChange={onImageChange} disabled={isLoading || isCandidateMutationLoading} hidden />
-    </div>
+        <input type="file" accept="image/*" ref={fileInputRef} onChange={onImageChange} disabled={isLoading || isCandidateMutationLoading || isCompanyMutationLoading} hidden />
+      </div>
+      {isCandidateMutateError && <AlertError message={candidateMutationError.message} />}
+      {isCompanyMutationError && <AlertError message={companyMutationError.message} />}
+    </>
   );
 }
 

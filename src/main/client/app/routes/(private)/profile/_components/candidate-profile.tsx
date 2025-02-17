@@ -1,25 +1,54 @@
 import { useState } from "react";
-import type { Candidate } from "~/features/candidate/types"
+import type { User } from "~/features/auth/types";
+import { useUpdateCandidateMutation } from "~/features/candidate/api";
+import { uploadFile } from "~/features/storage/api";
 
 type Props = {
-  data: Candidate
+  user: User
 }
 
-export function CandidateProfile({ data }: Props) {
-  const [resumeKey, setResumeKey] = useState(data.resumeKey || null);
+export function CandidateProfile({ user }: Props) {
+  const cloudflarePublicEndpoint = import.meta.env.VITE_CLOUDFLARE_PUBLIC_ENDPOINT ?? "";
+
+  const { isLoading: isCandidateMutationLoading, mutateAsync: updateCandidate, isError: isCandidateMutateError, error: candidateMutationError } = useUpdateCandidateMutation();
+  const [resumeUrl, setResumeUrl] = useState<string | null>(() => {
+    if (user.role !== "CANDIDATE") {
+      return null
+    }
+    if (user.candidate.resumeKey === undefined || user.candidate.resumeKey === null || user.candidate.resumeKey === "") return null
+    console.log(user.candidate.resumeKey)
+    return `${cloudflarePublicEndpoint}/${user.candidate.resumeKey}`
+  });
+
   const [isUploading, setIsUploading] = useState(false);
 
   const handleResumeUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    const { candidate } = user
+
+    if (!candidate) return
+
     setIsUploading(true);
-    setTimeout(() => {
-      setResumeKey(file.name);
-      setIsUploading(false);
-      alert("Resume uploaded successfully!");
-    }, 1000);
+    const objectKey = `${user.id}/resume.pdf`
+    const response = await uploadFile(file, objectKey)
+    if (response.error) {
+      console.error(response.error)
+      setIsUploading(false)
+      return
+    }
+
+    await updateCandidate({
+      ...user.candidate,
+      resumeKey: objectKey
+    })
+
+    setResumeUrl(`${cloudflarePublicEndpoint}/${objectKey}`)
+    setIsUploading(false)
   };
+
+  if (user.role !== "CANDIDATE") return null
 
   return (
     <>
@@ -30,13 +59,13 @@ export function CandidateProfile({ data }: Props) {
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-600">Phone</span>
-            <span className="text-base font-semibold">{data.phone}</span>
+            <span className="text-base font-semibold">{user.candidate.phone}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-600">Preferences</span>
             <ul className="flex flex-wrap gap-2">
-              {data.jobPreferences.map((e, i) => (
+              {user.candidate.jobPreferences.map((e, i) => (
                 <li key={i + 1} className="badge badge-md">
                   {e}
                 </li>
@@ -48,10 +77,10 @@ export function CandidateProfile({ data }: Props) {
           <div className="mb-4">
             <span className="text-sm font-medium text-gray-600">Resume</span>
             <div className="mt-2">
-              {resumeKey ? (
+              {resumeUrl ? (
                 <div className="flex items-center gap-4">
                   <a
-                    href={`https://www.adobe.com/br/acrobat/pdf-reader.html`}
+                    href={resumeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline"
@@ -62,9 +91,9 @@ export function CandidateProfile({ data }: Props) {
                     <input
                       type="file"
                       className="hidden"
-                      accept=".pdf,.doc,.docx"
+                      accept=".pdf"
                       onChange={handleResumeUpload}
-                      disabled={isUploading}
+                      disabled={isUploading || isCandidateMutationLoading}
                     />
                     Change Resume
                   </label>
@@ -76,7 +105,7 @@ export function CandidateProfile({ data }: Props) {
                     className="hidden"
                     accept=".pdf,.doc,.docx"
                     onChange={handleResumeUpload}
-                    disabled={isUploading}
+                    disabled={isUploading || isCandidateMutationLoading}
                   />
                   Upload Resume
                 </label>

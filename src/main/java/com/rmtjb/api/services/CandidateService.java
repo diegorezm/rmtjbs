@@ -36,7 +36,7 @@ public class CandidateService {
     if (user.getRole().equals(UserRoles.CANDIDATE)) {
       Candidate candidate = this.findByUserId(user.getId());
       candidate.setPhone(dto.phone());
-      candidate.setJobPreferences(dto.preferences());
+      candidate.setJobPreferences(dto.jobPreferences());
 
       if (dto.profilePictureKey().isPresent()) {
         candidate.setProfilePictureKey(dto.profilePictureKey().get());

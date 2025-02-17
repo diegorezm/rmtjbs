@@ -32,7 +32,7 @@ public class Candidate {
 
   public Candidate(CandidateDTO dto) {
     this.phone = dto.phone();
-    this.jobPreferences = dto.preferences();
+    this.jobPreferences = dto.jobPreferences();
     this.profilePictureKey = dto.profilePictureKey().orElse("");
     this.resumeKey = dto.resumeKey().orElse("");
   }
