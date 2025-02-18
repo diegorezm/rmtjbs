@@ -4,10 +4,11 @@ export default [
   layout("./components/layouts/app-layout.tsx", [
     index("routes/(public)/index.tsx"),
     route("/profile", "./routes/(private)/profile/index.tsx"),
+    route("/applications", "./routes/(private)/applications/index.tsx"),
     layout("./components/layouts/job-layout.tsx", [
       ...prefix("jobs", [
         route("/general", "./routes/(public)/jobs/general/index.tsx"),
-        route("/recommended", "./routes/(public)/jobs/recommended/index.tsx")
+        route("/recommended", "./routes/(public)/jobs/recommended/index.tsx"),
       ]),
     ]),
     ...prefix("auth", [

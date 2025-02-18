@@ -6,6 +6,7 @@ import com.rmtjb.api.domain.exception.EntityNotFoundException;
 import com.rmtjb.api.domain.exception.UnauthorizedException;
 import com.rmtjb.api.domain.job.JobApplication;
 import com.rmtjb.api.domain.job.JobPosting;
+import com.rmtjb.api.domain.job.UpdateJobApplicationStatusDTO;
 import com.rmtjb.api.repositories.CandidateRepository;
 import com.rmtjb.api.repositories.JobApplicationRepository;
 import com.rmtjb.api.repositories.JobPostingRepository;
@@ -63,5 +64,19 @@ public class JobApplicationService {
             .findById(jobId)
             .orElseThrow(() -> new IllegalArgumentException("Job not found"));
     return jobApplicationRepository.findAllByJobPostingId(job.getId());
+  }
+
+  public void updateStatus(UpdateJobApplicationStatusDTO dto, UUID applicationId, UUID companyId) {
+    var application = this.findById(applicationId);
+    if (!application.getJobPosting().getCompany().getId().equals(companyId))
+      throw new UnauthorizedException("You are not allowed to do this.");
+    application.setStatus(dto.status());
+    this.jobApplicationRepository.save(application);
+  }
+
+  public JobApplication findById(UUID applicationID) {
+    return this.jobApplicationRepository
+        .findById(applicationID)
+        .orElseThrow(() -> new EntityNotFoundException("Application not found."));
   }
 }

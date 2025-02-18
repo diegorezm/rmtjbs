@@ -2,12 +2,14 @@ import { Building2, MapPin } from "lucide-react"
 import type { JobPosting } from "../types"
 import { useApplyToJobMutation } from "~/features/applications/api"
 import { AlertError } from "~/components/alert"
+import type { JobApplicationStatus } from "~/features/applications/types"
 
 type Props = {
   job: JobPosting,
-  userApplied: boolean
+  userApplied: boolean,
+  status?: JobApplicationStatus
 }
-export function JobCard({ job, userApplied }: Props) {
+export function JobCard({ job, userApplied, status }: Props) {
   const { isError, isLoading, error, mutateAsync } = useApplyToJobMutation()
 
   const onClick = async () => {
@@ -53,7 +55,7 @@ export function JobCard({ job, userApplied }: Props) {
         {job.salary && (
           <p className="text-sm text-gray-700 font-semibold mt-2">💰 ${job.salary.toLocaleString()} / year</p>
         )}
-
+        {status !== undefined && <Status status={status} />}
         <div className="mt-4">
           <button className="btn btn-primary w-full" disabled={userApplied || isLoading} onClick={onClick}>
             {userApplied ? "Already applied" : "Apply now"}
@@ -63,5 +65,22 @@ export function JobCard({ job, userApplied }: Props) {
       {isError && <AlertError message={error.message} />}
     </div>
   )
+}
 
+const Status = ({ status }: { status: JobApplicationStatus }) => {
+  const base = "badge badge-md"
+  switch (status) {
+    case "PENDING":
+      return (
+        <p className={base}>pending</p>
+      )
+    case "ACCEPTED":
+      return (
+        <p className={base + " badge-primary"}>accepted!</p>
+      )
+    case "REJECTED":
+      return (
+        <p className={base + " badge-error"}>rejected</p>
+      )
+  }
 }

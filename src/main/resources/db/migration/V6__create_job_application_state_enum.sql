@@ -1,0 +1,1 @@
+CREATE TYPE application_state AS ENUM ("PENDING", "ACCEPTED", "REJECTED");

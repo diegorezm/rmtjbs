@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "rmtjbs_job_applicants")
+@Table(name = "rmtjbs_job_applications")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,4 +29,7 @@ public class JobApplication {
   private JobPosting jobPosting;
 
   private LocalDateTime appliedAt = LocalDateTime.now();
+
+  @Enumerated(EnumType.STRING)
+  private JobApplicationStatus status = JobApplicationStatus.PENDING;
 }

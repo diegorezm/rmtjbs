@@ -52,11 +52,7 @@ export default function JobsPage() {
             return (
               <JobCard userApplied={applied} job={e} key={e.id} />
             )
-
-          }
-          )
-          }
-
+          })}
 
           {data.content.length > 0 && (
             <Pagination totalPages={data.page.totalPages} page={page} onPageChange={(newPage) => {

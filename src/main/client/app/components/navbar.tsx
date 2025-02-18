@@ -1,4 +1,4 @@
-import { Building2, LogOut, UserIcon } from "lucide-react";
+import { Building2, FileUser, LogOut, UserIcon } from "lucide-react";
 import { useMemo } from "react";
 import { NavLink, useNavigate } from "react-router";
 import type { User } from "~/features/auth/types";
@@ -61,12 +61,18 @@ export function UserAvatar({ logoutFn, user }: { user: User, logoutFn: () => voi
       </label>
       <ul className="menu dropdown-content bg-base-100 rounded-box z-1 shadow-sm">
         <li>
-          <NavLink to="/profile" className="btn btn-ghost">
+          <NavLink to="/profile" className="btn btn-ghost justify-start">
             <UserIcon className="size-4" /> Profile
           </NavLink>
         </li>
+
         <li>
-          <button className="btn btn-ghost" onClick={onLogout}>
+          <NavLink to="/applications" className="btn btn-ghost justify-start">
+            <FileUser className="size-4" /> Applications
+          </NavLink>
+        </li>
+        <li>
+          <button className="btn btn-ghost justify-start" onClick={onLogout}>
             <LogOut className="size-4" /> Logout
           </button>
         </li>
