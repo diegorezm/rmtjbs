@@ -5,6 +5,7 @@ import { JobCard } from "~/features/jobs/components/job-card";
 import { Pagination } from "~/components/pagination";
 import { useSearchParams } from "react-router";
 import { useAuthContext } from "~/providers/auth-provider";
+import { useCandidateApplicationsQuery } from "~/features/applications/api";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -19,9 +20,7 @@ export default function JobsPage() {
   const q = getSearchParams.get("q") ?? ""
   const page = Number.parseInt(getSearchParams.get("page") || "0") ?? 0
 
-
   const getPreferences = () => {
-    console.log(user?.candidate?.jobPreferences)
     if (user?.role === "CANDIDATE") return user.candidate.jobPreferences
     return []
   }
@@ -32,7 +31,9 @@ export default function JobsPage() {
     preferences: getPreferences()
   })
 
-  if (isLoading) {
+  const { isLoading: isApplicationsLoading, data: userApplications } = useCandidateApplicationsQuery()
+
+  if (isLoading || isApplicationsLoading) {
     return (
       <div className="w-full h-full flex justify-center">
         <span className="loading loading-spinner loading-lg"></span>
@@ -40,13 +41,23 @@ export default function JobsPage() {
     )
   }
 
+  const applications = new Set(userApplications?.map((application) => application.jobPosting.id))
+
   return (
     <>
       {isError ? <AlertError message={error.message} /> : (
         <div className="max-w-4xl mx-auto grid gap-6">
-          {data.content.map((e, i) => (
-            <JobCard job={e} key={i} />
-          ))}
+          {data.content.map((e) => {
+            const applied = applications.has(e.id)
+            return (
+              <JobCard userApplied={applied} job={e} key={e.id} />
+            )
+
+          }
+          )
+          }
+
+
           {data.content.length > 0 && (
             <Pagination totalPages={data.page.totalPages} page={page} onPageChange={(newPage) => {
               setSearchParams({ q, page: newPage.toString() })

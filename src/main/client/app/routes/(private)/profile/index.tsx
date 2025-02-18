@@ -5,6 +5,13 @@ import { Edit } from "lucide-react";
 import { CompanyProfile } from "./_components/company-profile";
 import { InteractiveAvatar } from "./_components/avatar";
 import { EditUserDialog } from "./_components/edit-user-dialog";
+import type { Route } from "./+types";
+
+export function meta({ }: Route.MetaArgs) {
+  return [
+    { title: "Profile" },
+  ]
+}
 
 export default function ProfilePage() {
   const { user } = useAuthContext();

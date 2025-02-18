@@ -51,7 +51,12 @@ export function UserAvatar({ logoutFn, user }: { user: User, logoutFn: () => voi
     <div className="dropdown dropdown-end">
       <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
         <div className="w-10 rounded-full">
-          <img src={avatarUrl} alt="User Avatar" />
+          <img src={avatarUrl} alt="User Avatar"
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null
+              currentTarget.src = "/default-avatar.png"
+            }}
+          />
         </div>
       </label>
       <ul className="menu dropdown-content bg-base-100 rounded-box z-1 shadow-sm">

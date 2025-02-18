@@ -49,7 +49,7 @@ export default function RegisterPage() {
     },
     candidateDTO: {
       phone: "",
-      preferences: []
+      jobPreferences: []
     },
     companyDTO: {
       location: ""

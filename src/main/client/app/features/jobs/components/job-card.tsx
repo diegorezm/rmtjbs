@@ -1,13 +1,23 @@
 import { Building2, MapPin } from "lucide-react"
 import type { JobPosting } from "../types"
+import { useApplyToJobMutation } from "~/features/applications/api"
+import { AlertError } from "~/components/alert"
 
 type Props = {
-  job: JobPosting
+  job: JobPosting,
+  userApplied: boolean
 }
-export function JobCard({ job }: Props) {
+export function JobCard({ job, userApplied }: Props) {
+  const { isError, isLoading, error, mutateAsync } = useApplyToJobMutation()
+
+  const onClick = async () => {
+    await mutateAsync({
+      jobId: job.id
+    })
+  }
+
   return (
-    <div key={job.id} className="card bg-base-100 shadow-md p-4 rounded-lg border border-neutral">
-      {/* Company Banner */}
+    <div className="card bg-base-100 shadow-md p-4 rounded-lg border border-neutral">
       {job.company.bannerKey && (
         <div className="mb-4">
           <img src={job.company.bannerKey} alt={`${job.company.user.name} Banner`} className="rounded-lg w-full h-24 object-cover" />
@@ -44,11 +54,13 @@ export function JobCard({ job }: Props) {
           <p className="text-sm text-gray-700 font-semibold mt-2">💰 ${job.salary.toLocaleString()} / year</p>
         )}
 
-        {/* Apply Button */}
         <div className="mt-4">
-          <button className="btn btn-primary w-full">Apply Now</button>
+          <button className="btn btn-primary w-full" disabled={userApplied || isLoading} onClick={onClick}>
+            {userApplied ? "Already applied" : "Apply now"}
+          </button>
         </div>
       </div>
+      {isError && <AlertError message={error.message} />}
     </div>
   )
 

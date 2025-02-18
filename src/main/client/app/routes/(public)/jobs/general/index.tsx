@@ -4,6 +4,7 @@ import { AlertError } from "~/components/alert";
 import { JobCard } from "~/features/jobs/components/job-card";
 import { Pagination } from "~/components/pagination";
 import { useSearchParams } from "react-router";
+import { useCandidateApplicationsQuery } from "~/features/applications/api";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -22,7 +23,9 @@ export default function JobsPage() {
     page,
   })
 
-  if (isLoading) {
+  const { isLoading: isApplicationsLoading, data: userApplications } = useCandidateApplicationsQuery()
+
+  if (isLoading || isApplicationsLoading) {
     return (
       <div className="w-full h-full flex justify-center">
         <span className="loading loading-spinner loading-lg"></span>
@@ -30,12 +33,14 @@ export default function JobsPage() {
     )
   }
 
+  const applications = new Set(userApplications?.map((application) => application.jobPosting.id))
+
   return (
     <>
       {isError ? <AlertError message={error.message} /> : (
         <div className="max-w-4xl mx-auto grid gap-6">
           {data.content.map((e, i) => (
-            <JobCard job={e} key={i} />
+            <JobCard job={e} key={i} userApplied={applications.has(e.id)} />
           ))}
           {data.content.length > 0 && (
             <Pagination totalPages={data.page.totalPages} page={page} onPageChange={(newPage) => {

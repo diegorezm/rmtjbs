@@ -1,6 +1,8 @@
 package com.rmtjb.api.domain.candidate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.rmtjb.api.domain.job.JobApplication;
 import com.rmtjb.api.domain.user.User;
 import jakarta.persistence.*;
 import java.util.List;
@@ -28,7 +30,10 @@ public class Candidate {
   private String resumeKey;
   private String phone;
 
-  @ElementCollection private List<String> jobPreferences;
+  @ElementCollection @JsonManagedReference private List<String> jobPreferences;
+
+  @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+  private List<JobApplication> applications;
 
   public Candidate(CandidateDTO dto) {
     this.phone = dto.phone();
