@@ -13,27 +13,17 @@ export function CandidateFormFields({ formData, handleChange }: Props) {
   const [preferencesInput, setPreferencesInput] = useState("");
   const [preferences, setPreferences] = useState(formData.candidateDTO.jobPreferences);
 
-  const handlePreferencesInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value;
-    setPreferencesInput(input);
-
-    if (input.includes(",")) {
-      if (preferences.length > 20) return
-      const items = input
-        .split(",")
-        .map((item) => item.trim())
-        .filter((item) => item !== "");
-      const updatedPreferences = [...preferences, ...items];
-      formData.candidateDTO.jobPreferences = updatedPreferences
-      setPreferences(updatedPreferences);
-      setPreferencesInput("");
-    }
+  const addPreference = () => {
+    const newPreference = preferencesInput.trim()
+    setPreferences(e => ([...e, newPreference]))
+    formData.candidateDTO.jobPreferences = preferences
+    setPreferencesInput("")
   };
 
-  const handleRemovePreference = (index: number) => {
-    const filtered = preferences.filter((_, i) => i !== index);
-    formData.candidateDTO.jobPreferences = filtered
-    setPreferences(filtered);
+  const removePreference = (index: number) => {
+    const newPreferences = preferences.filter((_, i) => i !== index)
+    setPreferences(newPreferences)
+    formData.candidateDTO.jobPreferences = newPreferences
   };
 
   return (
@@ -61,15 +51,25 @@ export function CandidateFormFields({ formData, handleChange }: Props) {
         <label htmlFor="preferences" className="label">
           <span className="label-text">Preferences</span>
         </label>
-        <input
-          type="text"
-          id="preferences"
-          placeholder="Enter preferences (e.g., Web Developer, Data Analyst)"
-          className="input input-primary w-full"
-          value={preferencesInput}
-          data-section="candidateDTO"
-          onChange={handlePreferencesInput}
-        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            id="preferences"
+            placeholder="Enter preferences (e.g., Web Developer, Data Analyst)"
+            className="input input-primary w-full"
+            value={preferencesInput}
+            data-section="candidateDTO"
+            onChange={(e) => setPreferencesInput(e.target.value)}
+          />
+
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={addPreference}
+          >
+            Add
+          </button>
+        </div>
         <div className="mt-2">
           {preferences.length > 0 && (
             <>
@@ -81,7 +81,7 @@ export function CandidateFormFields({ formData, handleChange }: Props) {
                     <button
                       type="button"
                       className="hover:cursor-pointer"
-                      onClick={() => handleRemovePreference(index)}
+                      onClick={() => removePreference(index)}
                     >
                       <X className="size-3" />
                     </button>

@@ -6,10 +6,12 @@ export default [
     route("/profile", "./routes/(private)/profile/index.tsx"),
     route("/applications", "./routes/(private)/applications/index.tsx"),
     route("/job/:jobId", "./routes/(public)/job/index.tsx"),
+    route("/job/create", "./routes/(public)/jobs/create/index.tsx"),
     layout("./components/layouts/job-layout.tsx", [
       ...prefix("jobs", [
         route("/general", "./routes/(public)/jobs/general/index.tsx"),
         route("/recommended", "./routes/(public)/jobs/recommended/index.tsx"),
+        route("/my-jobs", "./routes/(public)/jobs/my-jobs/index.tsx"),
       ]),
     ]),
     ...prefix("auth", [

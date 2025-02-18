@@ -25,6 +25,29 @@ export const useJobPostsQuery = (params: {
   );
 };
 
+export const useMyJobPostsQuery = (params: {
+  page?: number;
+  q?: string;
+  id: string
+}) => {
+  return useQuery<Page<JobPosting>, Error>(
+    ['myJobPosts', params],
+    async () => {
+      const response = await api.get(`/job-posts/company/${params.id}`, {
+        params: {
+          page: params.page || 1,
+          q: params.q,
+        },
+      });
+      return response.data;
+    },
+    {
+      keepPreviousData: true,
+    }
+  );
+};
+
+
 export const useRecommendedJobPostsQuery = (params: {
   page?: number;
   q?: string;
@@ -75,6 +98,8 @@ export const useSaveJobPostMutation = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['jobPosts']);
+        queryClient.invalidateQueries(['jobRecommendedPosts'])
+        queryClient.invalidateQueries(['myJobPosts'])
       },
     }
   );

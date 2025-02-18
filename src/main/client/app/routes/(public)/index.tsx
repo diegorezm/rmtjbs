@@ -30,7 +30,7 @@ export default function Index() {
         </p>
 
         <div className="mt-8 flex items-center justify-center gap-6">
-          <NavLink to="/jobs" className="btn btn-primary btn-lg transition-transform duration-300 hover:scale-105">
+          <NavLink to="/jobs/recommended" className="btn btn-primary btn-lg transition-transform duration-300 hover:scale-105">
             Get to work!
           </NavLink>
           <NavLink to="#know-more" className="btn btn-outline btn-lg transition-transform duration-300 hover:scale-105 2xl:hidden">

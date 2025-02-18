@@ -3,7 +3,7 @@ import { useRecommendedJobPostsQuery } from "~/features/jobs/api";
 import { AlertError } from "~/components/alert";
 import { JobCard } from "~/features/jobs/components/job-card";
 import { Pagination } from "~/components/pagination";
-import { useSearchParams } from "react-router";
+import { Navigate, useSearchParams } from "react-router";
 import { useAuthContext } from "~/providers/auth-provider";
 import { useCandidateApplicationsQuery } from "~/features/applications/api";
 
@@ -20,15 +20,14 @@ export default function JobsPage() {
   const q = getSearchParams.get("q") ?? ""
   const page = Number.parseInt(getSearchParams.get("page") || "0") ?? 0
 
-  const getPreferences = () => {
-    if (user?.role === "CANDIDATE") return user.candidate.jobPreferences
-    return []
+  if (user?.role !== "CANDIDATE") {
+    return <Navigate to="/" replace />
   }
 
   const { data, isLoading, isError, error } = useRecommendedJobPostsQuery({
     q,
     page,
-    preferences: getPreferences()
+    preferences: user.candidate.jobPreferences
   })
 
   const { isLoading: isApplicationsLoading, data: userApplications } = useCandidateApplicationsQuery()

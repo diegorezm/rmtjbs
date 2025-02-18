@@ -15,7 +15,7 @@ export type JobPosting = {
   }
 }
 
-export type JobPostingDTO = Omit<JobPosting, "createdAt" | "updatedAt">
+export type JobPostingDTO = Omit<JobPosting, "createdAt" | "updatedAt" | "company" | "id">
 
 export type UpdateJobPostingDTO = {
   data: JobPostingDTO,

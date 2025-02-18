@@ -1,5 +1,5 @@
 import { useJobPostQuery } from "~/features/jobs/api"
-import type { Route } from "../jobs/[id]/+types/index"
+import type { Route } from "./+types/index"
 import { Spinner } from "~/components/spinner"
 import { Navigate, NavLink } from "react-router"
 import { JobCard } from "~/features/jobs/components/job-card"

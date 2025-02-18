@@ -23,6 +23,11 @@ public class JobPostingService {
   private final JobPostingRepository jobPostingRepository;
   private final CompanyRepository companyRepository;
 
+  public Page<JobPosting> findByCompanyIdAndKeyword(
+      Pageable pageable, UUID companyID, String query) {
+    return jobPostingRepository.findByCompanyIdAndKeyword(companyID, query, pageable);
+  }
+
   public Page<JobPosting> findByCompanyId(Pageable pageable, UUID companyID) {
     return jobPostingRepository.findByCompanyId(companyID, pageable);
   }

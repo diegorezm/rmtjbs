@@ -1,4 +1,4 @@
-import { Building2, FileUser, LogOut, NotebookTabs, UserIcon, type IconNode, type LucideIcon } from "lucide-react";
+import { Building2, FileUser, LogOut, NotebookTabs, UserIcon, type LucideIcon } from "lucide-react";
 import { useMemo } from "react";
 import { NavLink, useNavigate } from "react-router";
 import type { User } from "~/features/auth/types";
@@ -30,7 +30,7 @@ const companyProfileLinks = [
     Icon: UserIcon
   },
   {
-    href: "/my-jobs",
+    href: "/jobs/my-jobs",
     title: "My jobs",
     Icon: NotebookTabs
   }
@@ -43,9 +43,11 @@ function DesktopNavbar({ user }: { user: User | null }) {
         <li>
           <NavLink to="/" className="text-lg">Home</NavLink>
         </li>
-        {user !== null && user.role !== "COMPANY" && (
+        {user !== null && (
           <li>
-            <NavLink to="/jobs/recommended" className="text-lg">Jobs</NavLink>
+            <NavLink to={{
+              pathname: user.role === "COMPANY" ? "/jobs/my-jobs" : "/jobs/recommended"
+            }} className="text-lg">Jobs</NavLink>
           </li>
         )}
       </ul>

@@ -14,4 +14,4 @@
     - [] applications page
     - [] new job posting page
 - [] Job application state (pending, reject, accepted)
-
+- [] check if job expired

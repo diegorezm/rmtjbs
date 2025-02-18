@@ -1,35 +1,52 @@
 import { Search } from "lucide-react"
 import { NavLink, Outlet, useSearchParams } from "react-router"
+import { useAuthContext } from "~/providers/auth-provider"
 
 export default function JobLayout() {
+  const { user } = useAuthContext()
   const [getSearchParams, setSearchParams] = useSearchParams()
   const q = getSearchParams.get("q") ?? ""
   return (
     <div className="w-full h-full space-y-4">
-      <div className="join w-full mx-auto justify-center">
-        <div className="w-full lg:w-2/3">
-          <label className="input input-neutral w-full input-lg validator join-item">
-            <input type="email" placeholder="Title,Key words" value={q} required onChange={e => {
-              setSearchParams({ q: e.target.value })
-            }} />
+
+
+      <div className="flex flex-col lg:flex-row lg:items-center justify-center gap-4 w-full mx-auto">
+        {/* Search Input and Button */}
+        <div className="flex w-full lg:w-2/3">
+          <label className="input input-neutral w-full input-lg">
+            <input
+              type="email"
+              placeholder="Search for title, keywords, etc..."
+              value={q}
+              required
+              onChange={(e) => {
+                setSearchParams({ q: e.target.value });
+              }}
+            />
           </label>
         </div>
-        <button className="btn btn-primary btn-lg join-item">
-          <Search className="size-4" />
-        </button>
+
+        {user?.role === "COMPANY" && (
+          <NavLink to="/job/create" className="btn btn-primary btn-lg">
+            New job
+          </NavLink>
+        )}
       </div>
-      <div role="tablist" className="tabs tabs-border w-full mx-auto justify-center">
-        <NavLink to="/jobs/recommended" role="tab" className={({ isActive }) => [
-          "tab",
-          isActive && "tab-active"
-        ].join(" ")}>
-          Recommended
-        </NavLink>
-        <NavLink to="/jobs/general" role="tab" className={({ isActive }) => [
-          "tab",
-          isActive && "tab-active"
-        ].join(" ")}>General</NavLink>
-      </div>
+
+      {user?.role !== "COMPANY" && (
+        <div role="tablist" className="tabs tabs-border w-full mx-auto justify-center">
+          <NavLink to="/jobs/recommended" role="tab" className={({ isActive }) => [
+            "tab",
+            isActive && "tab-active"
+          ].join(" ")}>
+            Recommended
+          </NavLink>
+          <NavLink to="/jobs/general" role="tab" className={({ isActive }) => [
+            "tab",
+            isActive && "tab-active"
+          ].join(" ")}>General</NavLink>
+        </div>
+      )}
       <Outlet />
     </div>
   )

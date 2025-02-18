@@ -56,7 +56,7 @@ export default function RegisterPage() {
     }
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { id, value, dataset } = e.target;
     const section = dataset.section as keyof RegisterFormData | undefined;
 

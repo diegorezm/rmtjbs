@@ -7,7 +7,7 @@ type RegisterFormProps = {
   step: number;
   formData: RegisterFormData;
   registerType: string;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLElement>) => void;
   handleNext: (e: React.FormEvent) => void;
   handleBack: () => void;
   handleSubmit: (e: React.FormEvent) => void;

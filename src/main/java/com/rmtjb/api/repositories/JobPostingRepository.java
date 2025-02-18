@@ -43,4 +43,12 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, UUID> {
       @Param("query") String query, @Param("skills") String[] skills, Pageable pageable);
 
   Page<JobPosting> findByCompanyId(UUID id, Pageable pageable);
+
+  @Query(
+      value =
+          """
+SELECT * FROM rmtjbs_job_postings j WHERE j.title ILIKE %:query% AND j.company_id = :companyId
+""",
+      nativeQuery = true)
+  Page<JobPosting> findByCompanyIdAndKeyword(UUID companyId, String query, Pageable pageable);
 }

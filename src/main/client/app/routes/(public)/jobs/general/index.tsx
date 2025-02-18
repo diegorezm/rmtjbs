@@ -3,8 +3,9 @@ import { useJobPostsQuery } from "~/features/jobs/api";
 import { AlertError } from "~/components/alert";
 import { JobCard } from "~/features/jobs/components/job-card";
 import { Pagination } from "~/components/pagination";
-import { useSearchParams } from "react-router";
+import { Navigate, useSearchParams } from "react-router";
 import { useCandidateApplicationsQuery } from "~/features/applications/api";
+import { useAuthContext } from "~/providers/auth-provider";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -14,9 +15,14 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function JobsPage() {
+  const { user } = useAuthContext()
   const [getSearchParams, setSearchParams] = useSearchParams()
   const q = getSearchParams.get("q") ?? ""
   const page = Number.parseInt(getSearchParams.get("page") || "0") ?? 0
+
+  if (user?.role !== "CANDIDATE") {
+    return <Navigate to="/" replace />
+  }
 
   const { data, isLoading, isError, error } = useJobPostsQuery({
     q,

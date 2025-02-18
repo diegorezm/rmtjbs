@@ -58,6 +58,19 @@ public class JobPostsController {
     return ResponseEntity.ok(jobPostingService.findById(id));
   }
 
+  @GetMapping("/company/{companyId}")
+  public Page<JobPosting> findByCompanyId(
+      @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+      @RequestParam(name = "q", required = false) String query,
+      @PathVariable UUID companyId) {
+    Pageable paging = PageRequest.of(page - 1, 10, Sort.by("id").ascending());
+    boolean hasQuery = query != null && !query.isBlank();
+    if (hasQuery) {
+      return jobPostingService.findByCompanyIdAndKeyword(paging, companyId, query);
+    }
+    return jobPostingService.findByCompanyId(paging, companyId);
+  }
+
   @PostMapping
   public ResponseEntity<?> save(@RequestBody JobPostDTO dto) {
     this.jobPostingService.save(dto);
