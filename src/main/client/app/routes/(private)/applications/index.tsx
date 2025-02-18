@@ -18,6 +18,12 @@ export default function ApplicationsPage() {
       </div>
     )
   }
+
+  if (userApplications?.length === 0) {
+    return (
+      <h1 className="text-2xl font-bold text-center">No applications found!</h1>
+    )
+  }
   return (
     <div className="space-y-6">
       {userApplications?.map((e) => (

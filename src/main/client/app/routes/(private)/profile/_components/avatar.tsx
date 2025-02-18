@@ -14,7 +14,10 @@ type Props = {
 export function InteractiveAvatar({ avatarKey, user }: Props) {
   const { isLoading: isCandidateMutationLoading, mutateAsync: updateCandidate, isError: isCandidateMutateError, error: candidateMutationError } = useUpdateCandidateMutation();
   const { isLoading: isCompanyMutationLoading, mutateAsync: updateCompany, isError: isCompanyMutationError, error: companyMutationError } = useUpdateCompanyMutation();
+
   const [isLoading, setIsLoading] = useState(false);
+  const [fileUploadError, setFileUploadError] = useState<string | null>(null)
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const cloudflarePublicEndpoint = import.meta.env.VITE_CLOUDFLARE_PUBLIC_ENDPOINT ?? "";
@@ -43,7 +46,7 @@ export function InteractiveAvatar({ avatarKey, user }: Props) {
     const uploadResponse = await uploadFile(file, objectKey);
 
     if (uploadResponse.error) {
-      console.error("UPLOAD FILE ERROR: ", uploadResponse.error);
+      setFileUploadError(uploadResponse.error)
       setIsLoading(false);
       return;
     }
@@ -65,6 +68,7 @@ export function InteractiveAvatar({ avatarKey, user }: Props) {
       })
     }
     setIsLoading(false)
+    window.location.reload()
   };
 
   return (
@@ -83,12 +87,10 @@ export function InteractiveAvatar({ avatarKey, user }: Props) {
           />
         </div>
 
-        {/* Overlay and loading spinner */}
         <div className={`absolute inset-0 flex items-center justify-center rounded-full bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLoading ? "opacity-100" : ""}`} role="button" onClick={onFileInputClick}>
-          {isLoading && (
+          {isLoading ? (
             <span className="loading loading-spinner loading-lg my-8 mx-8"></span>
-          )}
-          <Image className="m-auto my-8" />
+          ) : <Image className="m-auto my-8" />}
         </div>
 
         <input type="file" accept="image/*" ref={fileInputRef} onChange={onImageChange} disabled={isLoading || isCandidateMutationLoading || isCompanyMutationLoading} hidden />
@@ -96,6 +98,8 @@ export function InteractiveAvatar({ avatarKey, user }: Props) {
       {isCandidateMutateError && <AlertError message={candidateMutationError.message} />
       }
       {isCompanyMutationError && <AlertError message={companyMutationError.message} />}
+
+      {fileUploadError !== null && <AlertError message={fileUploadError} />}
     </>
   );
 }

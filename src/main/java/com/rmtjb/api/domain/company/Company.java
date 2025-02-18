@@ -28,10 +28,12 @@ public class Company {
   private String location;
   private String logoKey;
   private String bannerKey;
+  private String description;
 
   public Company(CompanyDTO dto) {
     this.location = dto.location();
     this.logoKey = dto.logoKey().orElse("");
     this.bannerKey = dto.bannerKey().orElse("");
+    this.description = dto.description().orElse("");
   }
 }

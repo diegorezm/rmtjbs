@@ -3,7 +3,6 @@ import { NavLink, useNavigate } from "react-router";
 import { AlertError } from "~/components/alert";
 import { useLoginMutation } from "~/features/auth/api";
 import { type LoginDTO } from "~/features/auth/types";
-import { useAuthContext } from "~/providers/auth-provider";
 
 export const meta = () => {
   return [{
@@ -19,12 +18,10 @@ export default function LoginPage() {
 
   const loginMutation = useLoginMutation()
   const navigate = useNavigate()
-  const { setUser } = useAuthContext()
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const data = await loginMutation.mutateAsync(formData)
-    setUser(data.user)
+    await loginMutation.mutateAsync(formData)
     navigate("/profile")
   }
 

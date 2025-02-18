@@ -5,6 +5,7 @@ export default [
     index("routes/(public)/index.tsx"),
     route("/profile", "./routes/(private)/profile/index.tsx"),
     route("/applications", "./routes/(private)/applications/index.tsx"),
+    route("/job/:jobId", "./routes/(public)/job/index.tsx"),
     layout("./components/layouts/job-layout.tsx", [
       ...prefix("jobs", [
         route("/general", "./routes/(public)/jobs/general/index.tsx"),

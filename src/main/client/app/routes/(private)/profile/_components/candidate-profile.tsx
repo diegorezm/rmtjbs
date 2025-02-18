@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AlertError } from "~/components/alert";
 import type { User } from "~/features/auth/types";
 import { useUpdateCandidateMutation } from "~/features/candidate/api";
 import { uploadFile } from "~/features/storage/api";
@@ -9,7 +10,6 @@ type Props = {
 
 export function CandidateProfile({ user }: Props) {
   const cloudflarePublicEndpoint = import.meta.env.VITE_CLOUDFLARE_PUBLIC_ENDPOINT ?? "";
-
   const { isLoading: isCandidateMutationLoading, mutateAsync: updateCandidate, isError: isCandidateMutateError, error: candidateMutationError } = useUpdateCandidateMutation();
   const [resumeUrl, setResumeUrl] = useState<string | null>(() => {
     if (user.role !== "CANDIDATE") {
@@ -46,6 +46,7 @@ export function CandidateProfile({ user }: Props) {
 
     setResumeUrl(`${cloudflarePublicEndpoint}/${objectKey}`)
     setIsUploading(false)
+    window.location.reload()
   };
 
   if (user.role !== "CANDIDATE") return null
@@ -116,6 +117,7 @@ export function CandidateProfile({ user }: Props) {
           </div>
 
         </div>
+        {isCandidateMutateError && <AlertError message={candidateMutationError.message} />}
       </div >
     </>
   )

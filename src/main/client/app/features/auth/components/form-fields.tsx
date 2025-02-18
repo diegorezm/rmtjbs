@@ -4,7 +4,7 @@ type Props = {
   formData: {
     userDTO: RegisterDTO
   }
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLElement>) => void;
 }
 
 export function UserFormFields({ formData, handleChange }: Props) {

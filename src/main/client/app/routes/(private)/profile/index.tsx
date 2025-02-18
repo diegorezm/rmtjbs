@@ -6,6 +6,7 @@ import { CompanyProfile } from "./_components/company-profile";
 import { InteractiveAvatar } from "./_components/avatar";
 import { EditUserDialog } from "./_components/edit-user-dialog";
 import type { Route } from "./+types";
+import { CompanyBanner } from "./_components/company-banner";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -14,11 +15,16 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function ProfilePage() {
-  const { user } = useAuthContext();
+  const { user, isLoading } = useAuthContext();
+
+  if (isLoading) {
+    return null
+  }
 
   if (user === null) {
     return <Navigate to="/auth/login" replace />;
   }
+
   const getAvatarKey = () => {
     if (user.role === "COMPANY") return user.company.logoKey
     if (user.role === "CANDIDATE") return user.candidate.profilePictureKey
@@ -29,18 +35,18 @@ export default function ProfilePage() {
     <div className="min-h-screen flex flex-col items-center py-10">
       <div className="max-w-3xl w-full px-6">
         <div className="relative card shadow-xl bg-base-100">
-          <div className="flex flex-wrap gap-2 justify-center absolute right-5 top-5">
-            <button className="btn btn-primary btn-md" onClick={() => {
-              const modal = document.getElementById('edit-profile-modal') as HTMLDialogElement
-              modal.showModal()
-            }}>
-              <Edit className="size-5" />
-            </button>
-          </div>
-          <div className="card-body flex flex-col items-center">
+          <CompanyBanner />
+          <div className="relative  card-body flex flex-col items-center">
 
+            <div className="flex flex-wrap gap-2 justify-center absolute right-5 top-5">
+              <button className="btn btn-primary btn-md" onClick={() => {
+                const modal = document.getElementById('edit-profile-modal') as HTMLDialogElement
+                modal.showModal()
+              }}>
+                <Edit className="size-5" />
+              </button>
+            </div>
             <InteractiveAvatar user={user} avatarKey={getAvatarKey()} />
-
             <h2 className="text-2xl font-bold mt-4">{user.name}</h2>
             <p className="text-gray-500 text-sm">{user.email}</p>
 

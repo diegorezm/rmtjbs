@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import { GlobalSpinner } from "~/components/global-spinner";
 import { useFetchCurrentUser, useLogoutMutation } from "~/features/auth/api";
 
@@ -7,45 +7,31 @@ import type { User } from "~/features/auth/types";
 type AuthContextType = {
   user: User | null;
   isLoading: boolean;
-  setUser: (user: User | null) => void;
-  logout: () => void
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isFetching, setIsFetching] = useState(true);
-  const { data, isLoading: queryLoading, isError } = useFetchCurrentUser();
+
+  const { data, isLoading, isError, isFetching } = useFetchCurrentUser();
 
   const logoutFn = useLogoutMutation();
 
-  const logout = () => {
-    setUser(null)
-    logoutFn()
+  if (isLoading || isFetching) {
+    return <GlobalSpinner />
   }
 
-  useEffect(() => {
-    if (!queryLoading) {
-      if (!isError) {
-        setUser(data);
-      } else {
-        logout()
-      }
-      setIsFetching(false);
-    }
-  }, [data, queryLoading, isError]);
-
-  if (isFetching) {
-    return <GlobalSpinner />
+  const getUser = () => {
+    if (isError) return null
+    return data
   }
 
   return (
     <AuthContext.Provider value={{
-      user,
-      logout,
-      setUser,
-      isLoading: isFetching
+      user: getUser(),
+      logout: logoutFn,
+      isLoading: isLoading || isFetching,
     }}>
       {children}
     </AuthContext.Provider>

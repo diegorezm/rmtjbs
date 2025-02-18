@@ -9,4 +9,4 @@ export type Candidate = {
   profilePictureKey?: string
 }
 
-export type CandidateDTO = Omit<Candidate, "id">
+export type CandidateDTO = Omit<Candidate, "id" | "applications">

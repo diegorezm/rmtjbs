@@ -1,29 +1,65 @@
-import { Building2, FileUser, LogOut, UserIcon } from "lucide-react";
+import { Building2, FileUser, LogOut, NotebookTabs, UserIcon, type IconNode, type LucideIcon } from "lucide-react";
 import { useMemo } from "react";
 import { NavLink, useNavigate } from "react-router";
 import type { User } from "~/features/auth/types";
 import { useAuthContext } from "~/providers/auth-provider";
 
+type Link = {
+  href: string,
+  title: string
+  Icon?: LucideIcon
+}
 
-function DesktopNavbar() {
+const candidateProfileLiks: Link[] = [
+  {
+    href: "/profile",
+    title: "Profile",
+    Icon: UserIcon
+  },
+  {
+    href: "/applications",
+    title: "Applications",
+    Icon: FileUser
+  }
+];
+
+const companyProfileLinks = [
+  {
+    href: "/profile",
+    title: "Profile",
+    Icon: UserIcon
+  },
+  {
+    href: "/my-jobs",
+    title: "My jobs",
+    Icon: NotebookTabs
+  }
+]
+
+function DesktopNavbar({ user }: { user: User | null }) {
   return (
     <div className="navbar-center hidden lg:flex">
       <ul className="menu menu-horizontal px-1">
         <li>
           <NavLink to="/" className="text-lg">Home</NavLink>
         </li>
-        <li>
-          <NavLink to="/jobs/recommended" className="text-lg">Jobs</NavLink>
-        </li>
+        {user !== null && user.role !== "COMPANY" && (
+          <li>
+            <NavLink to="/jobs/recommended" className="text-lg">Jobs</NavLink>
+          </li>
+        )}
       </ul>
     </div>
   );
 }
 
-
 export function UserAvatar({ logoutFn, user }: { user: User, logoutFn: () => void }) {
-
   const cloudflarePublicEndpoint = import.meta.env.VITE_CLOUDFLARE_PUBLIC_ENDPOINT ?? "";
+
+  const links = useMemo(() => {
+    if (user.role === "COMPANY") return companyProfileLinks
+    return candidateProfileLiks
+  }, [user])
 
   const getAvatarKey = () => {
     if (user.role === "COMPANY") return user.company.logoKey
@@ -59,18 +95,17 @@ export function UserAvatar({ logoutFn, user }: { user: User, logoutFn: () => voi
           />
         </div>
       </label>
-      <ul className="menu dropdown-content bg-base-100 rounded-box z-1 shadow-sm">
-        <li>
-          <NavLink to="/profile" className="btn btn-ghost justify-start">
-            <UserIcon className="size-4" /> Profile
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink to="/applications" className="btn btn-ghost justify-start">
-            <FileUser className="size-4" /> Applications
-          </NavLink>
-        </li>
+      <ul className="menu dropdown-content bg-base-100 rounded-box z-1 shadow-md w-44">
+        {links.map((e, i) => (
+          <li key={i + 1}>
+            <NavLink to={e.href} className="btn btn-ghost justify-start">
+              {e.Icon !== undefined && (
+                <e.Icon className="size-4" />
+              )}
+              {e.title}
+            </NavLink>
+          </li>
+        ))}
         <li>
           <button className="btn btn-ghost justify-start" onClick={onLogout}>
             <LogOut className="size-4" /> Logout
@@ -93,7 +128,7 @@ export function Navbar() {
         </NavLink>
       </div>
 
-      <DesktopNavbar />
+      <DesktopNavbar user={user} />
 
       <div className="navbar-end flex items-center gap-4">
         {user ? (

@@ -18,7 +18,7 @@ type Props = {
 }
 
 export function EditCandidateDialog({ closeDialog }: Props) {
-  const { user } = useAuthContext()
+  const { user, setUser } = useAuthContext()
   const { isError: isUserError, error: userError, mutateAsync: updateUser, isLoading: isUserLoading } = useUpdateUserMutation()
   const { isError: isCandidateError, error: candidateError, mutateAsync: updateCandidte, isLoading: isCandidateLoading } = useUpdateCandidateMutation()
 
@@ -58,8 +58,21 @@ export function EditCandidateDialog({ closeDialog }: Props) {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    if (user?.role !== "CANDIDATE") return
+
     await updateUser(formData.userDTO)
     await updateCandidte(formData.candidateDTO)
+
+    const { candidate } = user
+
+    setUser({
+      ...user,
+      name: formData.userDTO.name,
+      candidate: {
+        ...candidate,
+        ...formData.candidateDTO
+      }
+    })
     closeDialog()
   }
 

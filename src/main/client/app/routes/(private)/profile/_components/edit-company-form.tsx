@@ -29,7 +29,7 @@ export function EditCompanyDialog({ closeDialog }: Props) {
     },
     companyDTO: {
       location: user?.company?.location ?? "",
-      bannerKey: user?.company?.logoKey,
+      bannerKey: user?.company?.bannerKey,
       logoKey: user?.company?.logoKey
     }
   }

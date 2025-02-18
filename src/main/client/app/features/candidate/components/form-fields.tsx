@@ -6,7 +6,7 @@ type Props = {
   formData: {
     candidateDTO: CandidateDTO
   },
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+  handleChange: (e: React.ChangeEvent<HTMLElement>) => void
 }
 
 export function CandidateFormFields({ formData, handleChange }: Props) {

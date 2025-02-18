@@ -65,7 +65,8 @@ public class DummyData implements CommandLineRunner {
 
     RegisterDTO registerDTO2 = new RegisterDTO("diego", "diego_company@email.com", "diegodiego");
     var user2 = authenticationService.register(registerDTO2, UserRoles.COMPANY);
-    var dto2 = new CompanyDTO("localizacao", Optional.empty(), Optional.empty());
+    var dto2 =
+        new CompanyDTO("Brazil, São Paulo", Optional.empty(), Optional.empty(), Optional.empty());
     companyService.save(dto2, user2);
     // mock data
     int num_companies = 10;
