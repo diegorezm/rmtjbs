@@ -34,7 +34,14 @@
 
 ## TODOS
 - [x] auth
+- [x] add upload to s3
 - [] services
 - [] pages
-- [] integrate frontend with backend
-- [] add upload to s3
+    - [x] auth pages
+    - [x] profile page
+    - [x] general jobs page
+    - [x] recommended job page
+    - [] applied to page
+    - [] applicants page
+    - [] new job posting page
+- [] Job application state (pendind, reject, accepted)
