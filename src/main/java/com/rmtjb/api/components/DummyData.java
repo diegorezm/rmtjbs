@@ -59,7 +59,7 @@ public class DummyData implements CommandLineRunner {
         new CandidateDTO(
             "12121212121",
             List.of("Web dev", "php", "java", "typescript"),
-            Optional.empty(),
+            Optional.of("18e32157-7eab-4e1b-8666-963a4448b629/resume.pdf"),
             Optional.empty());
     candidateService.save(dto, user);
 

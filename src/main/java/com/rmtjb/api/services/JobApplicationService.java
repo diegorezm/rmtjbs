@@ -12,6 +12,7 @@ import com.rmtjb.api.repositories.CandidateRepository;
 import com.rmtjb.api.repositories.JobApplicationRepository;
 import com.rmtjb.api.repositories.JobPostingRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +39,10 @@ public class JobApplicationService {
         this.jobPostingRepository
             .findById(jobID)
             .orElseThrow(() -> new EntityNotFoundException("Job not found."));
+    var now = LocalDateTime.now();
+    if (jobPosting.getExpiresAt().isBefore(now)) {
+      throw new UnauthorizedException("This posting expired.");
+    }
 
     var alreadyApplied =
         jobApplicationRepository.findByCandidateIdAndJobPostingId(

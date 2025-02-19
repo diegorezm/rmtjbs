@@ -6,7 +6,7 @@ import { uploadFile } from "~/features/storage/api";
 import { useAuthContext } from "~/providers/auth-provider"
 
 export function CompanyBanner() {
-  const { user, setUser } = useAuthContext()
+  const { user } = useAuthContext()
 
   const { isLoading: isCompanyMutationLoading, mutateAsync: updateCompany, isError: isCompanyMutationError, error: companyMutationError } = useUpdateCompanyMutation();
   const [isLoading, setIsLoading] = useState(false)

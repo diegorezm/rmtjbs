@@ -1,7 +1,7 @@
 import { useJobPostQuery } from "~/features/jobs/api";
 import type { Route } from "./+types/index";
 import { Spinner } from "~/components/spinner";
-import { Navigate, NavLink, useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 import { JobCard } from "~/features/jobs/components/job-card";
 import { ArrowLeft, Edit, Trash } from "lucide-react";
 import { useAuthContext } from "~/providers/auth-provider";

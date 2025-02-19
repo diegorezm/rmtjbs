@@ -1,10 +1,11 @@
-import { Building2, MapPin } from "lucide-react";
+import { Building2, CircleDollarSign, MapPin, Timer } from "lucide-react";
 import type { JobPosting } from "../types";
 import { useApplyToJobMutation } from "~/features/applications/api";
 import { AlertError } from "~/components/alert";
 import type { JobApplicationStatus } from "~/features/applications/types";
 import { NavLink } from "react-router";
 import { ApplicationStatus } from "./job-status";
+import { formatDistanceToNow, isPast } from "date-fns";
 
 type Props = {
   job: JobPosting;
@@ -14,23 +15,38 @@ type Props = {
   isCompany?: boolean
 };
 
+// This component should probably be broken down into smaller components
+// i am not going to do that tho, this is just a thought
 export function JobCard({ job, userApplied, status, isCompany = false, variant = "small" }: Props) {
+  const cloudflarePublicEndpoint = import.meta.env.VITE_CLOUDFLARE_PUBLIC_ENDPOINT ?? "";
   const { isError, isLoading, error, mutateAsync } = useApplyToJobMutation();
 
+  const isExpanded = variant === "expanded"
+
+  const formatExpiresAt = (expiresAt: string) => {
+    const expirationDate = new Date(expiresAt);
+    if (isPast(expirationDate)) {
+      return "Expired";
+    }
+    return `expires ${formatDistanceToNow(expirationDate, { addSuffix: true })}`;
+  };
+
+  const isExpired = formatExpiresAt(job.expiresAt) === "Expired"
+
   const onClick = async () => {
+    if (isExpired) return
     await mutateAsync({
       jobId: job.id,
     });
   };
 
-  const isExpanded = variant === "expanded"
 
   return (
     <div className={`card bg-base-100  rounded-lg ${!isExpanded && 'p-4 border border-neutral shadow-md'}`}>
       {job.company.bannerKey && (
         <div className="mb-4">
           <img
-            src={job.company.bannerKey}
+            src={`${cloudflarePublicEndpoint}/${job.company.bannerKey}`}
             alt={`${job.company.user.name} Banner`}
             className="rounded-lg w-full h-24 object-cover"
           />
@@ -67,12 +83,16 @@ export function JobCard({ job, userApplied, status, isCompany = false, variant =
 
             {/* Salary */}
             {job.salary && (
-              <p className="text-sm text-gray-700 font-semibold mt-2">
-                💰 ${job.salary.toLocaleString()} / year
+              <p className="text-sm text-gray-700 font-semibold mt-2 flex items-center gap-1">
+                <CircleDollarSign className="size-4" /> ${job.salary.toLocaleString()} / year
               </p>
             )}
           </>
         )}
+        <p className="text-sm text-gray-700 font-semibold mt-2 flex items-center gap-1">
+          <Timer className="size-4" />
+          {formatExpiresAt(job.expiresAt)}
+        </p>
 
         {/* Expanded version */}
         {isExpanded && (
@@ -106,7 +126,8 @@ export function JobCard({ job, userApplied, status, isCompany = false, variant =
         )}
 
         {status !== undefined && <ApplicationStatus status={status} />}
-        {!isCompany && (
+
+        {!isCompany && !isExpired && (
           <div className="mt-4">
             <button
               className={`btn btn-primary ${!isExpanded ? 'w-full' : 'w-2/3'}`}
