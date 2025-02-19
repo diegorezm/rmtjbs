@@ -1,11 +1,14 @@
 import { Mail, Phone } from "lucide-react";
-import { useState } from "react";
+import { useNavigate } from "react-router";
 import { AlertError } from "~/components/alert";
 import { useUpdateApplicationStatusMutation } from "~/features/applications/api";
 import type { JobApplicationResponseDTO, JobApplicationStatus } from "~/features/applications/types";
+import { useCreateChatMutation } from "~/features/chat/api";
+import { useAuthContext } from "~/providers/auth-provider";
 
 export function ApplicationListItem({ applicant }: { applicant: JobApplicationResponseDTO }) {
-  const [status, setStatus] = useState(applicant.status)
+  const { user } = useAuthContext()
+  const navigation = useNavigate()
   const cloudflarePublicEndpoint =
     import.meta.env.VITE_CLOUDFLARE_PUBLIC_ENDPOINT ?? "";
 
@@ -16,13 +19,22 @@ export function ApplicationListItem({ applicant }: { applicant: JobApplicationRe
     isLoading: isUpdateStatusLoading
   } = useUpdateApplicationStatusMutation()
 
+  const { isError: isCreateChatError, error: createChatError, mutateAsync: createChat, isLoading: isCreateChatLoading } = useCreateChatMutation()
+
   const handleStatusChange = async (applicationId: string, status: JobApplicationStatus) => {
-    setStatus(status)
     await updateStatus({
       applicationId,
       status
     })
   };
+
+  const onChatClick = async () => {
+    if (user === null) return
+    const chat = await createChat({
+      chatterTwoId: applicant.userId
+    })
+    navigation(`/chat/${chat.id}`)
+  }
 
   return (
     <li
@@ -79,15 +91,21 @@ export function ApplicationListItem({ applicant }: { applicant: JobApplicationRe
             onChange={(event) =>
               handleStatusChange(applicant.id, event.target.value as JobApplicationStatus)
             }
-            defaultValue={status}
+            defaultValue={applicant.status}
           >
             <option value="PENDING">Pending</option>
             <option value="ACCEPTED">Accepted</option>
             <option value="REJECTED">Rejected</option>
           </select>
+          {applicant.status === "ACCEPTED" && (
+            <button className="btn btn-primary" onClick={onChatClick} disabled={isCreateChatLoading}>
+              Chat
+            </button>
+          )}
         </div>
 
         {isUpdateStatusError && <AlertError message={updateStatusError.message} />}
+        {isCreateChatError && <AlertError message={createChatError.message} />}
       </div>
     </li>
   )

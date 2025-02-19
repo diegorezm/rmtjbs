@@ -16,7 +16,6 @@ export function CandidateProfile({ user }: Props) {
       return null
     }
     if (user.candidate.resumeKey === undefined || user.candidate.resumeKey === null || user.candidate.resumeKey === "") return null
-    console.log(user.candidate.resumeKey)
     return `${cloudflarePublicEndpoint}/${user.candidate.resumeKey}`
   });
 

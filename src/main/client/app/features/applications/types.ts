@@ -13,6 +13,7 @@ export type JobApplication = {
 
 export type JobApplicationResponseDTO = {
   id: string,
+  userId: string,
   candidate: Candidate,
   name: string,
   email: string,
