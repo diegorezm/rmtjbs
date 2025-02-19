@@ -13,6 +13,6 @@
     - [x] job page
     - [x] applications page
     - [x] new job posting page
-    - [] chat page
 - [x] Job application state (pending, reject, accepted)
-- [] check if job expired
+- [x] check if job expired
+- [] code a chat feature that lets the recruiter talk to the candidate
