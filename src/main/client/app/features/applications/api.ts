@@ -21,21 +21,12 @@ export const useApplyToJobMutation = () => {
 
 
 export const useUpdateApplicationStatusMutation = () => {
-  const queryClient = useQueryClient();
-
   return useMutation<void, Error, { applicationId: string, status: JobApplicationStatus }>(
     async ({ applicationId, status }) => {
       await api.put(`/job-application/application/${applicationId}`, {
         status
       });
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["candidateApplications"]);
-        queryClient.invalidateQueries(["jobApplications"]);
-        queryClient.invalidateQueries(["currentUser"]);
-      },
-    }
   );
 };
 

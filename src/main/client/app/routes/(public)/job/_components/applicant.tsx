@@ -1,9 +1,11 @@
 import { Mail, Phone } from "lucide-react";
+import { useState } from "react";
 import { AlertError } from "~/components/alert";
 import { useUpdateApplicationStatusMutation } from "~/features/applications/api";
 import type { JobApplicationResponseDTO, JobApplicationStatus } from "~/features/applications/types";
 
 export function ApplicationListItem({ applicant }: { applicant: JobApplicationResponseDTO }) {
+  const [status, setStatus] = useState(applicant.status)
   const cloudflarePublicEndpoint =
     import.meta.env.VITE_CLOUDFLARE_PUBLIC_ENDPOINT ?? "";
 
@@ -15,6 +17,7 @@ export function ApplicationListItem({ applicant }: { applicant: JobApplicationRe
   } = useUpdateApplicationStatusMutation()
 
   const handleStatusChange = async (applicationId: string, status: JobApplicationStatus) => {
+    setStatus(status)
     await updateStatus({
       applicationId,
       status
@@ -76,7 +79,7 @@ export function ApplicationListItem({ applicant }: { applicant: JobApplicationRe
             onChange={(event) =>
               handleStatusChange(applicant.id, event.target.value as JobApplicationStatus)
             }
-            defaultValue={applicant.status}
+            defaultValue={status}
           >
             <option value="PENDING">Pending</option>
             <option value="ACCEPTED">Accepted</option>
