@@ -24,6 +24,9 @@ export default function ApplicationsPage() {
       <h1 className="text-2xl font-bold text-center">No applications found!</h1>
     )
   }
+
+  console.log(userApplications)
+
   return (
     <div className="space-y-6">
       {userApplications?.map((e) => (

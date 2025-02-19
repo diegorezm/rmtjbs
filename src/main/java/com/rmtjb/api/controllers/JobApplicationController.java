@@ -56,13 +56,12 @@ public class JobApplicationController {
   }
 
   @GetMapping("/job/{jobId}")
-  public ResponseEntity<List<JobApplication>> getApplicantsByJob(@PathVariable UUID jobId) {
+  public ResponseEntity<?> getApplicantsByJob(@PathVariable UUID jobId) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     User user = (User) authentication.getPrincipal();
-    if (user.getRole().equals(UserRoles.COMPANY)
-        && user.getCompany() != null
-        && user.getCompany().getId().equals(jobId)) {
-      List<JobApplication> applicants = jobApplicationService.getApplicantsByJob(jobId);
+    if (user.getRole().equals(UserRoles.COMPANY) && user.getCompany() != null) {
+      var c = user.getCompany();
+      var applicants = jobApplicationService.getApplicantsByJob(c.getId(), jobId);
       return ResponseEntity.ok(applicants);
     }
 

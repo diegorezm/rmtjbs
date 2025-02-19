@@ -5,12 +5,14 @@ import com.rmtjb.api.domain.exception.EntityAlreadyExistsException;
 import com.rmtjb.api.domain.exception.EntityNotFoundException;
 import com.rmtjb.api.domain.exception.UnauthorizedException;
 import com.rmtjb.api.domain.job.JobApplication;
+import com.rmtjb.api.domain.job.JobApplicationResponseDTO;
 import com.rmtjb.api.domain.job.JobPosting;
 import com.rmtjb.api.domain.job.UpdateJobApplicationStatusDTO;
 import com.rmtjb.api.repositories.CandidateRepository;
 import com.rmtjb.api.repositories.JobApplicationRepository;
 import com.rmtjb.api.repositories.JobPostingRepository;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -58,12 +60,27 @@ public class JobApplicationService {
     return jobApplicationRepository.findAllByCandidateId(candidate.getId());
   }
 
-  public List<JobApplication> getApplicantsByJob(UUID jobId) {
+  public List<JobApplicationResponseDTO> getApplicantsByJob(UUID companyId, UUID jobId) {
     JobPosting job =
         jobPostingRepository
             .findById(jobId)
             .orElseThrow(() -> new IllegalArgumentException("Job not found"));
-    return jobApplicationRepository.findAllByJobPostingId(job.getId());
+    if (job.getCompany().getId().equals(companyId)) {
+      var applicants = jobApplicationRepository.findAllByJobPostingId(job.getId());
+      List<JobApplicationResponseDTO> jobApplicationResponse = new ArrayList<>();
+      applicants.forEach(
+          (e) -> {
+            var candidate = e.getCandidate();
+            var user = candidate.getUser();
+            jobApplicationResponse.add(
+                new JobApplicationResponseDTO(
+                    candidate, user.getName(), user.getEmail(), e.getStatus(), e.getId()));
+          });
+
+      return jobApplicationResponse;
+    }
+
+    throw new UnauthorizedException("You are not authorized to see this.");
   }
 
   public void updateStatus(UpdateJobApplicationStatusDTO dto, UUID applicationId, UUID companyId) {

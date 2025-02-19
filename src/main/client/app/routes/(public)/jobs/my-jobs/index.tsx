@@ -42,7 +42,7 @@ export default function MyJobsPage() {
     <div className="max-w-4xl mx-auto grid gap-6">
       {data.content.length === 0 && <p className="text-2xl font-bold">No jobs yet!</p>}
       {data.content.map((e, i) => (
-        <JobCard job={e} key={i} userApplied={false} />
+        <JobCard job={e} key={i} userApplied={false} isCompany={true} />
       ))}
       {data.content.length > 0 && (
         <Pagination totalPages={data.page.totalPages} page={page} onPageChange={(newPage) => {

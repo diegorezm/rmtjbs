@@ -10,3 +10,11 @@ export type JobApplication = {
   appliedAt: string,
   status: JobApplicationStatus
 }
+
+export type JobApplicationResponseDTO = {
+  id: string,
+  candidate: Candidate,
+  name: string,
+  email: string,
+  status: JobApplicationStatus
+}

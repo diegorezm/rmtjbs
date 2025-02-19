@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "~/lib/axios";
-import type { JobApplication } from "./types";
+import type { JobApplication, JobApplicationResponseDTO, JobApplicationStatus } from "./types";
 
 export const useApplyToJobMutation = () => {
   const queryClient = useQueryClient();
@@ -8,6 +8,26 @@ export const useApplyToJobMutation = () => {
   return useMutation<void, Error, { jobId: string }>(
     async ({ jobId }) => {
       await api.post(`/job-application/apply/${jobId}`);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["candidateApplications"]);
+        queryClient.invalidateQueries(["jobApplications"]);
+        queryClient.invalidateQueries(["currentUser"]);
+      },
+    }
+  );
+};
+
+
+export const useUpdateApplicationStatusMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, { applicationId: string, status: JobApplicationStatus }>(
+    async ({ applicationId, status }) => {
+      await api.put(`/job-application/application/${applicationId}`, {
+        status
+      });
     },
     {
       onSuccess: () => {
@@ -32,7 +52,7 @@ export const useCandidateApplicationsQuery = () =>
   );
 
 export const useApplicantsByJobQuery = (jobId: string) =>
-  useQuery<JobApplication[], Error>(
+  useQuery<JobApplicationResponseDTO[], Error>(
     ["jobApplications", jobId],
     async () => {
       const { data } = await api.get(`/job-application/job/${jobId}`);

@@ -4,15 +4,17 @@ import { useApplyToJobMutation } from "~/features/applications/api";
 import { AlertError } from "~/components/alert";
 import type { JobApplicationStatus } from "~/features/applications/types";
 import { NavLink } from "react-router";
+import { ApplicationStatus } from "./job-status";
 
 type Props = {
   job: JobPosting;
   userApplied: boolean;
   status?: JobApplicationStatus;
-  variant?: "small" | "expanded"; // New prop for toggling layout
+  variant?: "small" | "expanded";
+  isCompany?: boolean
 };
 
-export function JobCard({ job, userApplied, status, variant = "small" }: Props) {
+export function JobCard({ job, userApplied, status, isCompany = false, variant = "small" }: Props) {
   const { isError, isLoading, error, mutateAsync } = useApplyToJobMutation();
 
   const onClick = async () => {
@@ -20,10 +22,11 @@ export function JobCard({ job, userApplied, status, variant = "small" }: Props) 
       jobId: job.id,
     });
   };
-  const isExpanded = variant !== "expanded"
+
+  const isExpanded = variant === "expanded"
 
   return (
-    <div className={`card bg-base-100  rounded-lg ${isExpanded && 'p-4 border border-neutral shadow-md'}`}>
+    <div className={`card bg-base-100  rounded-lg ${!isExpanded && 'p-4 border border-neutral shadow-md'}`}>
       {job.company.bannerKey && (
         <div className="mb-4">
           <img
@@ -35,13 +38,16 @@ export function JobCard({ job, userApplied, status, variant = "small" }: Props) 
       )}
 
       <div className="flex flex-col gap-2">
-        {/* Job Title */}
-        <NavLink
-          to={`/job/${job.id}`}
-          className="text-xl font-bold link-primary hover:underline"
-        >
-          {job.title}
-        </NavLink>
+        {isExpanded ? (
+          <span className="text-lg text-primary font-bold">{job.title}</span>
+        ) : (
+          <NavLink
+            to={`/job/${job.id}`}
+            className="text-xl font-bold link-primary hover:underline"
+          >
+            {job.title}
+          </NavLink>
+        )}
 
         {/* Company Info */}
         <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -69,7 +75,7 @@ export function JobCard({ job, userApplied, status, variant = "small" }: Props) 
         )}
 
         {/* Expanded version */}
-        {variant === "expanded" && (
+        {isExpanded && (
           <>
             {/* Full Description */}
             <p
@@ -96,36 +102,24 @@ export function JobCard({ job, userApplied, status, variant = "small" }: Props) 
               </p>
             )}
 
-            {/* Application Status */}
-            {status !== undefined && <Status status={status} />}
           </>
         )}
 
-        {/* Apply Button */}
-        <div className="mt-4">
-          <button
-            className={`btn btn-primary ${isExpanded ? 'w-full' : 'w-2/3'}`}
-            disabled={userApplied || isLoading}
-            onClick={onClick}
-          >
-            {userApplied ? "Already applied" : "Apply now"}
-          </button>
-        </div>
+        {status !== undefined && <ApplicationStatus status={status} />}
+        {!isCompany && (
+          <div className="mt-4">
+            <button
+              className={`btn btn-primary ${!isExpanded ? 'w-full' : 'w-2/3'}`}
+              disabled={userApplied || isLoading}
+              onClick={onClick}
+            >
+              {userApplied ? "Already applied" : "Apply now"}
+            </button>
+          </div>
+        )}
       </div>
       {isError && <AlertError message={error.message} />}
     </div>
   );
 }
-
-const Status = ({ status }: { status: JobApplicationStatus }) => {
-  const base = "badge badge-md";
-  switch (status) {
-    case "PENDING":
-      return <p className={base}>pending</p>;
-    case "ACCEPTED":
-      return <p className={base + " badge-primary"}>accepted!</p>;
-    case "REJECTED":
-      return <p className={base + " badge-error"}>rejected</p>;
-  }
-};
 
