@@ -41,8 +41,13 @@ public class JobPosting {
   public JobPosting(JobPostDTO dto) {
     this.title = dto.title();
     this.description = dto.description();
-    this.salary = dto.salary().orElse(BigDecimal.ONE);
     this.expiresAt = dto.expiresAt();
-    this.skills = dto.skills().orElse(new ArrayList<String>());
+
+    if (dto.salary().isPresent()) {
+      this.salary = dto.salary().orElse(BigDecimal.ZERO);
+    }
+    if (dto.skills().isPresent()) {
+      this.skills = dto.skills().orElse(new ArrayList<String>());
+    }
   }
 }

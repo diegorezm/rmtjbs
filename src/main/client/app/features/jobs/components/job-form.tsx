@@ -1,15 +1,13 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import type { JobPostingDTO } from "../types";
 import { X } from "lucide-react";
 
 type Props = {
-  onSubmit: (e: FormEvent) => void,
   formData: JobPostingDTO,
   setFormData: React.Dispatch<React.SetStateAction<JobPostingDTO>>,
-  isLoading?: boolean
 }
 
-export function JobForm({ onSubmit, formData, setFormData, isLoading = false }: Props) {
+export function JobFormFields({ formData, setFormData }: Props) {
   const [skillInput, setSkillInput] = useState<string>("");
 
   const addSkill = () => {
@@ -39,7 +37,7 @@ export function JobForm({ onSubmit, formData, setFormData, isLoading = false }: 
   };
 
   return (
-    <form onSubmit={onSubmit} className="w-full">
+    <>
       {/* Title */}
       <div className="form-control">
         <label htmlFor="title" className="label">
@@ -114,7 +112,7 @@ export function JobForm({ onSubmit, formData, setFormData, isLoading = false }: 
       </div>
 
       {/* Salary */}
-      <div className="form-control">
+      <div className="form-control mt-2">
         <label htmlFor="salary" className="label">
           <span className="label-text">Salary</span>
         </label>
@@ -130,8 +128,6 @@ export function JobForm({ onSubmit, formData, setFormData, isLoading = false }: 
               salary: Number(e.target.value),
             }))
           }
-          min={0}
-          required
         />
         <p className="validator-hint !text-red-500">
           Enter a valid salary (must be a positive number)
@@ -175,12 +171,7 @@ export function JobForm({ onSubmit, formData, setFormData, isLoading = false }: 
           ))}
         </ul>
       </div>
-
-      {/* Submit */}
-      <button type="submit" className="btn btn-primary w-full" disabled={isLoading}>
-        Create Job
-      </button>
-    </form>
+    </>
   )
 
 }

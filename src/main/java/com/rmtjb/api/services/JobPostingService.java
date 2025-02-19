@@ -8,6 +8,8 @@ import com.rmtjb.api.domain.job.JobPosting;
 import com.rmtjb.api.domain.user.User;
 import com.rmtjb.api.repositories.CompanyRepository;
 import com.rmtjb.api.repositories.JobPostingRepository;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +65,16 @@ public class JobPostingService {
   }
 
   public void update(UUID id, JobPostDTO dto) {
-    JobPosting jobPosting = new JobPosting(dto);
+    JobPosting jobPosting = this.findById(id);
+    jobPosting.setTitle(dto.title());
+    if (dto.salary().isPresent()) {
+      jobPosting.setSalary(dto.salary().orElse(BigDecimal.ZERO));
+    }
+    if (dto.skills().isPresent()) {
+      jobPosting.setSkills(dto.skills().orElse(new ArrayList<>()));
+    }
+    jobPosting.setExpiresAt(dto.expiresAt());
+
     jobPostingRepository.save(jobPosting);
   }
 

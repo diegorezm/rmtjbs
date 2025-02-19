@@ -3,7 +3,7 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { AlertError } from "~/components/alert";
 import { useSaveJobPostMutation } from "~/features/jobs/api";
-import { JobForm } from "~/features/jobs/components/job-form";
+import { JobFormFields } from "~/features/jobs/components/job-form";
 import type { JobPostingDTO } from "~/features/jobs/types";
 
 export function meta() {
@@ -15,6 +15,7 @@ export function meta() {
 export default function CreateJobPage() {
   const { isLoading, isError, error, mutateAsync } = useSaveJobPostMutation()
   const navigation = useNavigate()
+
   const defaultValues = {
     description: "",
     title: "",
@@ -44,13 +45,15 @@ export default function CreateJobPage() {
           <h1 className="text-2xl font-bold text-center mb-4">Create a new job opening!</h1>
 
           {isError && <AlertError message={error.message} />}
-
-          <JobForm
-            isLoading={isLoading}
-            setFormData={setFormData}
-            formData={formData}
-            onSubmit={onSubmit}
-          />
+          <form onSubmit={onSubmit} className="w-full">
+            <JobFormFields
+              setFormData={setFormData}
+              formData={formData}
+            />
+            <button type="submit" className="btn btn-primary w-full" disabled={isLoading}>
+              Create Job
+            </button>
+          </form>
         </div>
       </div>
     </div>

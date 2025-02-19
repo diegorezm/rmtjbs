@@ -4,7 +4,7 @@ type Props = {
   formData: {
     companyDTO: CompanyDTO
   },
-  handleChange: (e: React.ChangeEvent<HTMLElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
 
 }
 

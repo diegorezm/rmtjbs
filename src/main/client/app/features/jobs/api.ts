@@ -121,3 +121,21 @@ export const useUpdateJobPostMutation = () => {
     }
   );
 };
+
+export const useDeleteJobPostMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<null, Error, { id: string }>(
+    async ({ id }) => {
+      await api.delete(`/job-posts/${id}`);
+      return null
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['jobPosts']);
+        queryClient.invalidateQueries(['jobPost']);
+        queryClient.invalidateQueries(['myJobPosts']);
+      },
+    }
+  );
+}

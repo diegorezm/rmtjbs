@@ -7,6 +7,8 @@ import { ArrowLeft, Edit, Trash } from "lucide-react";
 import { useAuthContext } from "~/providers/auth-provider";
 import { useApplicantsByJobQuery } from "~/features/applications/api";
 import { ApplicationListItem } from "./_components/applicant";
+import { DeleteJobDialog } from "./_components/delete-job-dialog";
+import { EditJobDialog } from "./_components/edit-job-dialog";
 
 export function meta() {
   return [{ title: "Job" }];
@@ -40,21 +42,32 @@ export default function JobPage({ params }: Route.MetaArgs) {
     return <Navigate to="/auth/login" replace />;
   }
 
-  const openDeleteDialog = () => { }
-  const openEditDialog = () => { }
+  const toggleDeleteDialog = () => {
+    const dialog = document.getElementById("delete-job-dialog") as HTMLDialogElement
+    if (dialog.open) dialog.close()
+    else dialog.show()
+  }
+
+  const toggleEditDialog = () => {
+    const dialog = document.getElementById("edit-job-dialog") as HTMLDialogElement
+    if (dialog.open) dialog.close()
+    else dialog.show()
+  }
 
   return (
     <div className="w-full h-full space-y-6">
+      <DeleteJobDialog closeDialog={toggleDeleteDialog} job={jobPosts} />
+      <EditJobDialog closeDialog={toggleEditDialog} job={jobPosts} />
       <div className="w-full flex items-ceter justify-between">
         <button onClick={() => navigation(-1)} className="btn btn-outline">
           <ArrowLeft className="size-4" />
         </button>
         {user.role === "COMPANY" && user?.company?.id === jobPosts.company.id && (
           <div className="flex gap-x-4">
-            <button className="btn btn-error">
+            <button className="btn btn-error" onClick={toggleDeleteDialog}>
               <Trash className="size-4" />
             </button>
-            <button className="btn btn-primary">
+            <button className="btn btn-primary" onClick={toggleEditDialog}>
               <Edit className="size-4" />
             </button>
           </div>
