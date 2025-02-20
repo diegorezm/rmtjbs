@@ -1,40 +1,69 @@
-import { Building2, FileUser, LogOut, NotebookTabs, UserIcon, type LucideIcon } from "lucide-react";
-import { useMemo } from "react";
-import { NavLink, useNavigate } from "react-router";
+import { Bell, Building2, UserIcon } from "lucide-react";
+import { NavLink } from "react-router";
 import type { User } from "~/features/auth/types";
 import { useAuthContext } from "~/providers/auth-provider";
+import { UserAvatar } from "./user-avatar";
+import { useEffect, useState } from "react";
+import { useWebSocket } from "~/hooks/use-websocket";
+import type { Notification } from "~/features/notification/types";
+import { NotificationCard } from "~/features/notification/components/notification-card";
 
-type Link = {
-  href: string,
-  title: string
-  Icon?: LucideIcon
-}
+const NotificationsBar = ({ userId }: { userId: string }) => {
+  const { stompClient, isConnected } = useWebSocket();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-const candidateProfileLiks: Link[] = [
-  {
-    href: "/profile",
-    title: "Profile",
-    Icon: UserIcon
-  },
-  {
-    href: "/applications",
-    title: "Applications",
-    Icon: FileUser
-  }
-];
+  const addNotification = (notification: Notification) => {
+    setNotifications((prev) => [...prev, notification]);
+  };
 
-const companyProfileLinks = [
-  {
-    href: "/profile",
-    title: "Profile",
-    Icon: UserIcon
-  },
-  {
-    href: "/jobs/my-jobs",
-    title: "My jobs",
-    Icon: NotebookTabs
-  }
-]
+  const markAsRead = (id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+    );
+  };
+
+  useEffect(() => {
+    if (stompClient && isConnected) {
+      const subscription = stompClient.subscribe(
+        `/user/queue/notifications`,
+        (message) => {
+          const notification: Notification = JSON.parse(message.body);
+          console.log("New notification received:", notification);
+          addNotification({ ...notification, isRead: false });
+        }
+      );
+
+      stompClient.publish({
+        destination: "/app/notifications.fetch",
+        body: JSON.stringify({ userId }),
+      });
+
+      return () => subscription.unsubscribe();
+    }
+  }, [stompClient, isConnected, userId]);
+
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  return (
+    <details className="dropdown">
+      <summary className="btn btn-ghost btn-sm m-1">
+        <Bell className="size-4" />
+        {unreadCount > 0 && (
+          <span className="badge badge-error badge-xs">{unreadCount}</span>
+        )}
+      </summary>
+      <ul className="flex flex-col menu dropdown-content bg-base-100 rounded-box z-1 w-fit p-2 shadow-sm">
+        {notifications.length === 0 ? (
+          <li className="text-sm text-gray-500">No notifications</li>
+        ) : (
+          notifications.map((notification, i) => (
+            <NotificationCard key={i} notification={notification} markAsRead={markAsRead} />
+          ))
+        )}
+      </ul>
+    </details>
+  );
+};
 
 function DesktopNavbar({ user }: { user: User | null }) {
   return (
@@ -50,69 +79,6 @@ function DesktopNavbar({ user }: { user: User | null }) {
             }} className="text-lg">Jobs</NavLink>
           </li>
         )}
-      </ul>
-    </div>
-  );
-}
-
-export function UserAvatar({ logoutFn, user }: { user: User, logoutFn: () => void }) {
-  const cloudflarePublicEndpoint = import.meta.env.VITE_CLOUDFLARE_PUBLIC_ENDPOINT ?? "";
-
-  const links = useMemo(() => {
-    if (user.role === "COMPANY") return companyProfileLinks
-    return candidateProfileLiks
-  }, [user])
-
-  const getAvatarKey = () => {
-    if (user.role === "COMPANY") return user.company.logoKey
-    if (user.role === "CANDIDATE") return user.candidate.profilePictureKey
-    return undefined
-  }
-
-  const avatarKey = getAvatarKey()
-
-  const avatarUrl = useMemo(() => {
-    if (avatarKey) {
-      return `${cloudflarePublicEndpoint}/${avatarKey}`;
-    }
-    return "/default-avatar.png";
-  }, [user, avatarKey, cloudflarePublicEndpoint]);
-
-  const navigate = useNavigate()
-
-  const onLogout = () => {
-    logoutFn()
-    navigate("/")
-  }
-
-  return (
-    <div className="dropdown dropdown-end">
-      <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-        <div className="w-10 rounded-full">
-          <img src={avatarUrl} alt="User Avatar"
-            onError={({ currentTarget }) => {
-              currentTarget.onerror = null
-              currentTarget.src = "/default-avatar.png"
-            }}
-          />
-        </div>
-      </label>
-      <ul className="menu dropdown-content bg-base-100 rounded-box z-1 shadow-md w-44">
-        {links.map((e, i) => (
-          <li key={i + 1}>
-            <NavLink to={e.href} className="btn btn-ghost justify-start">
-              {e.Icon !== undefined && (
-                <e.Icon className="size-4" />
-              )}
-              {e.title}
-            </NavLink>
-          </li>
-        ))}
-        <li>
-          <button className="btn btn-ghost justify-start" onClick={onLogout}>
-            <LogOut className="size-4" /> Logout
-          </button>
-        </li>
       </ul>
     </div>
   );
@@ -134,7 +100,10 @@ export function Navbar() {
 
       <div className="navbar-end flex items-center gap-4">
         {user ? (
-          <UserAvatar logoutFn={logout} user={user} />
+          <>
+            <NotificationsBar userId={user.id} />
+            <UserAvatar logoutFn={logout} user={user} />
+          </>
         ) : (
           <div className="gap-2 hidden lg:flex">
             <details className="dropdown">

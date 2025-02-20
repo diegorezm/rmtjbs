@@ -33,7 +33,7 @@ export function ApplicationListItem({ applicant }: { applicant: JobApplicationRe
     const chat = await createChat({
       chatterTwoId: applicant.userId
     })
-    navigation(`/chat/${chat.id}`)
+    navigation(`/chats/${chat.id}`)
   }
 
   return (

@@ -1,6 +1,7 @@
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { useNavigate } from "react-router";
 import { GlobalSpinner } from "~/components/global-spinner";
-import { useFetchCurrentUser, useLogoutMutation } from "~/features/auth/api";
+import { logoutFn, useFetchCurrentUser, useLogoutMutation } from "~/features/auth/api";
 
 import type { User } from "~/features/auth/types";
 
@@ -15,8 +16,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
 
   const { data, isLoading, isError, isFetching } = useFetchCurrentUser();
+  const logout = useLogoutMutation()
 
-  const logoutFn = useLogoutMutation();
+  useEffect(() => {
+    if (isError) {
+      logoutFn()
+    }
+  }, [isError])
 
   if (isLoading || isFetching) {
     return <GlobalSpinner />
@@ -30,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user: getUser(),
-      logout: logoutFn,
+      logout,
       isLoading: isLoading || isFetching,
     }}>
       {children}

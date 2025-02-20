@@ -1,4 +1,3 @@
-import { Search } from "lucide-react"
 import { NavLink, Outlet, useSearchParams } from "react-router"
 import { useAuthContext } from "~/providers/auth-provider"
 
@@ -7,9 +6,7 @@ export default function JobLayout() {
   const [getSearchParams, setSearchParams] = useSearchParams()
   const q = getSearchParams.get("q") ?? ""
   return (
-    <div className="w-full h-full space-y-4">
-
-
+    <div className="w-full h-full space-y-4 py-6 px-4">
       <div className="flex flex-col lg:flex-row lg:items-center justify-center gap-4 w-full mx-auto">
         {/* Search Input and Button */}
         <div className="flex w-full lg:w-2/3">

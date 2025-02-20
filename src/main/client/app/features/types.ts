@@ -7,3 +7,8 @@ export type Page<T> = {
     totalPages: number
   }
 };
+
+export type WebSocketMessage<T> = {
+  type: string,
+  payload: T
+}

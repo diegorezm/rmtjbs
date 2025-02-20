@@ -12,6 +12,7 @@ import com.rmtjb.api.repositories.JobPostingRepository;
 import com.rmtjb.api.services.AuthenticationService;
 import com.rmtjb.api.services.CandidateService;
 import com.rmtjb.api.services.CompanyService;
+import com.rmtjb.api.services.JobApplicationService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class DummyData implements CommandLineRunner {
   private final CandidateService candidateService;
   private final CompanyService companyService;
   private final JobPostingRepository jobPostingRepository;
+  private final JobApplicationService jobApplicationService;
 
   @Transactional
   private Company createCompany() {
@@ -61,17 +63,18 @@ public class DummyData implements CommandLineRunner {
             List.of("Web dev", "php", "java", "typescript"),
             Optional.of("curriculo_portfolio.pdf"),
             Optional.empty());
-    candidateService.save(dto, user);
+    var candidate = candidateService.save(dto, user);
 
-    RegisterDTO registerDTO2 = new RegisterDTO("diego", "diego_company@email.com", "diegodiego");
+    RegisterDTO registerDTO2 =
+        new RegisterDTO("evilcompany", "evilcompany@email.com", "diegodiego");
     var user2 = authenticationService.register(registerDTO2, UserRoles.COMPANY);
     var dto2 =
         new CompanyDTO("Brazil, São Paulo", Optional.empty(), Optional.empty(), Optional.empty());
     var c = companyService.save(dto2, user2);
 
-    for (int i = 0; i < 15; i++) {
-      createJobPosting(c);
-    }
+    var p = createJobPosting(c);
+    this.jobApplicationService.apply(candidate.getId(), p.getId());
+
     // mock data
     int num_companies = 10;
     Company[] companies = new Company[num_companies];

@@ -25,12 +25,10 @@ export default function ApplicationsPage() {
     )
   }
 
-  console.log(userApplications)
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4">
       {userApplications?.map((e) => (
-        <JobCard userApplied={true} job={e.jobPosting} status={e.status} />
+        <JobCard userApplied={true} job={e.jobPosting} status={e.status} key={e.id} />
       ))}
     </div>
   )

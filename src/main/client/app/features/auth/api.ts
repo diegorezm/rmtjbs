@@ -20,6 +20,11 @@ export const useLoginMutation = () => {
   );
 }
 
+export const logoutFn = () => {
+  localStorage.removeItem(AUTH_TOKEN_KEY)
+  localStorage.removeItem(AUTH_TOKEN_KEY + "-exp")
+}
+
 export const useLogoutMutation = () => {
   const queryClient = useQueryClient()
   return () => {

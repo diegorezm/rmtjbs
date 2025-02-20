@@ -1,0 +1,8 @@
+CREATE TABLE rmtjbs_messages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content TEXT NOT NULL,
+    chatter_id UUID NOT NULL REFERENCES rmtjbs_users(id) ON DELETE CASCADE,
+    chat_id UUID NOT NULL REFERENCES rmtjbs_chats(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

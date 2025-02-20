@@ -4,6 +4,12 @@ export default [
   layout("./components/layouts/app-layout.tsx", [
     index("routes/(public)/index.tsx"),
     route("/profile", "./routes/(private)/profile/index.tsx"),
+    layout("./components/layouts/chat-layout.tsx", [
+      ...prefix("chats", [
+        index("./routes/(private)/chats/index.tsx"),
+        route("/:chatId", "./routes/(private)/chats/[id]/index.tsx")
+      ]),
+    ]),
     route("/applications", "./routes/(private)/applications/index.tsx"),
     ...prefix("job", [
       route("/:jobId", "./routes/(public)/job/index.tsx"),

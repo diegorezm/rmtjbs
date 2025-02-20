@@ -29,7 +29,6 @@ public class JobApplicationController {
 
   @PostMapping("/apply/{jobId}")
   public ResponseEntity<?> apply(@PathVariable UUID jobId) {
-
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     User user = (User) authentication.getPrincipal();
     if (user.getRole().equals(UserRoles.CANDIDATE) && user.getCandidate() != null) {

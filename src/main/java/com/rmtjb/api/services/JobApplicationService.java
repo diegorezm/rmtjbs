@@ -79,7 +79,12 @@ public class JobApplicationService {
             var user = candidate.getUser();
             jobApplicationResponse.add(
                 new JobApplicationResponseDTO(
-                    candidate, user.getName(), user.getEmail(), e.getStatus(), e.getId()));
+                    candidate,
+                    user.getName(),
+                    user.getEmail(),
+                    e.getStatus(),
+                    e.getId(),
+                    user.getId()));
           });
 
       return jobApplicationResponse;

@@ -2,6 +2,7 @@ import { QueryProvider } from "~/providers/query-provider";
 import { Navbar } from "../navbar";
 import { Outlet } from "react-router";
 import { AuthProvider } from "~/providers/auth-provider";
+import { SocketClientProvider } from "~/providers/websocket-provider";
 
 export default function AppLayout() {
   return (
@@ -9,7 +10,7 @@ export default function AppLayout() {
       <QueryProvider>
         <AuthProvider>
           <Navbar />
-          <main className="px-2 md:px-12 py-6">
+          <main>
             <Outlet />
           </main>
         </AuthProvider>

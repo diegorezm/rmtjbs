@@ -30,6 +30,10 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(
             authorize ->
                 authorize
+                    .requestMatchers("/ws")
+                    .permitAll()
+                    .requestMatchers("/ws/**")
+                    .permitAll()
                     .requestMatchers(HttpMethod.GET, "/")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/auth/register/*")
@@ -42,21 +46,6 @@ public class SecurityConfiguration {
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }
-
-  // @Bean
-  // public UrlBasedCorsConfigurationSource corsConfigurationSource() {
-  //   CorsConfiguration corsConfig = new CorsConfiguration();
-  //   corsConfig.setAllowedOrigins(
-  //       Arrays.asList("http://localhost:5173")); // Adjust the origin as needed
-  //   corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-  //   corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-  //   corsConfig.setAllowCredentials(true); // Allow cookies to be sent with requests
-  //   corsConfig.setMaxAge(3600L); // Cache pre-flight requests for 1 hour
-  //
-  //   UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-  //   source.registerCorsConfiguration("/**", corsConfig);
-  //   return source;
-  // }
 
   @Bean
   public AuthenticationManager authenticationManager(

@@ -55,7 +55,7 @@ export default function JobPage({ params }: Route.MetaArgs) {
   }
 
   return (
-    <div className="w-full h-full space-y-6">
+    <div className="w-full h-full space-y-6 px-6 py-4">
       <DeleteJobDialog closeDialog={toggleDeleteDialog} job={jobPosts} />
       <EditJobDialog closeDialog={toggleEditDialog} job={jobPosts} />
       <div className="w-full flex items-ceter justify-between">
@@ -93,7 +93,7 @@ export default function JobPage({ params }: Route.MetaArgs) {
                 </li>
               )}
               {applicants.map((applicant) => (
-                <ApplicationListItem applicant={applicant} />
+                <ApplicationListItem applicant={applicant} key={applicant.id} />
               ))}
             </ul>
           </div>
