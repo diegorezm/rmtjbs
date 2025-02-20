@@ -3,8 +3,8 @@
 ## TODOS
 - [x] auth
 - [x] add upload to s3
-- [] services
-- [] pages
+- [x] services
+- [x] pages
     - [x] auth pages
     - [x] profile page
     - [x] general jobs page
@@ -15,4 +15,4 @@
     - [x] new job posting page
 - [x] Job application state (pending, reject, accepted)
 - [x] check if job expired
-- [] code a chat feature that lets the recruiter talk to the candidate
+- [x] code a chat feature that lets the recruiter talk to the candidate
