@@ -73,7 +73,7 @@ export default function JobPage({ params }: Route.MetaArgs) {
           </div>
         )}
       </div>
-      <div className="w-fit mx-auto">
+      <div className="w-2/3 mx-auto">
         <JobCard
           job={jobPosts}
           userApplied={false}
@@ -84,7 +84,7 @@ export default function JobPage({ params }: Route.MetaArgs) {
         <div className="divider my-6" />
 
         {!isApplicantsError && (
-          <div>
+          <div className="w-full">
             <h1 className="text-lg font-bold">Applicants</h1>
             <ul className="mt-2 space-y-4">
               {applicants.length === 0 && (

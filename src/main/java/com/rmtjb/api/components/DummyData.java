@@ -62,19 +62,20 @@ public class DummyData implements CommandLineRunner {
             "12121212121",
             List.of("Web dev", "php", "java", "typescript"),
             Optional.of("curriculo_portfolio.pdf"),
-            Optional.empty());
-    var candidate = candidateService.save(dto, user);
-
-    RegisterDTO registerDTO2 =
-        new RegisterDTO("evilcompany", "evilcompany@email.com", "diegodiego");
-    var user2 = authenticationService.register(registerDTO2, UserRoles.COMPANY);
-    var dto2 =
-        new CompanyDTO("Brazil, São Paulo", Optional.empty(), Optional.empty(), Optional.empty());
-    var c = companyService.save(dto2, user2);
-
-    var p = createJobPosting(c);
-    this.jobApplicationService.apply(candidate.getId(), p.getId());
-
+            Optional.of("6681212a-070e-47bd-a6e3-57a3a2b3de76/profile_picture.png"));
+    candidateService.save(dto, user);
+    //
+    // RegisterDTO registerDTO2 =
+    //     new RegisterDTO("evilcompany", "evilcompany@email.com", "diegodiego");
+    // var user2 = authenticationService.register(registerDTO2, UserRoles.COMPANY);
+    // var dto2 =
+    //     new CompanyDTO("Brazil, São Paulo", Optional.empty(), Optional.empty(),
+    // Optional.empty());
+    // var c = companyService.save(dto2, user2);
+    //
+    // var p = createJobPosting(c);
+    // this.jobApplicationService.apply(candidate.getId(), p.getId());
+    //
     // mock data
     int num_companies = 10;
     Company[] companies = new Company[num_companies];

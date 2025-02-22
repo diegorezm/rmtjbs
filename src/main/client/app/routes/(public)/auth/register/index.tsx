@@ -52,6 +52,7 @@ export default function RegisterPage() {
       jobPreferences: []
     },
     companyDTO: {
+      description: "",
       location: ""
     }
   });

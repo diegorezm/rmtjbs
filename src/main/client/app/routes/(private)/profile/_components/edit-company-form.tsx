@@ -28,6 +28,7 @@ export function EditCompanyDialog({ closeDialog }: Props) {
       name: user?.name ?? ""
     },
     companyDTO: {
+      description: user?.company?.description,
       location: user?.company?.location ?? "",
       bannerKey: user?.company?.bannerKey,
       logoKey: user?.company?.logoKey

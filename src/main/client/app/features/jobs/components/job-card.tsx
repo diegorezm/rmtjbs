@@ -41,7 +41,7 @@ export function JobCard({ job, userApplied, status, isCompany = false, variant =
   };
 
   return (
-    <div className={`card bg-base-100  rounded-lg ${!isExpanded && 'p-4 border border-neutral shadow-md'}`}>
+    <div className={`card bg-base-100  w-full rounded-lg ${!isExpanded && 'p-4 border border-neutral shadow-md'}`}>
       {job.company.bannerKey && (
         <div className="mb-4">
           <img
